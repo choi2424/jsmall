@@ -2,6 +2,7 @@ package com.jsmall.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +22,8 @@ import lombok.extern.log4j.Log4j;
 public class MemberController {
 	
 	private final MemberService memberService;
+	
+	private final PasswordEncoder passwordEncoder;
 	
 	// 회원가입 폼
 	@GetMapping("join")
@@ -49,6 +52,10 @@ public class MemberController {
 	// 회원가입
 	@PostMapping("join")
 	public String join(MemberVO vo,RedirectAttributes rttr) {
+		
+		vo.setMember_password(passwordEncoder.encode(vo.getMember_password())); 
+		
+		memberService.join(vo);
 		
 		return "redirect:/";
 	}

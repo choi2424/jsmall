@@ -244,7 +244,7 @@
           <artifactId>spring-context-support</artifactId>
           <version>${org.springframework-version}</version>
       </dependency>
-      
+     
       <!-- 이론설명 할것. -->
       <!-- 메일 관련라이브러리  javax.mail.internet.MimeMessage -->
         <dependency>

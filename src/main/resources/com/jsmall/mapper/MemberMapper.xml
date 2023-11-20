@@ -23,4 +23,13 @@
 			#{member_password}, #{member_zipcode}, #{member_addr}, #{member_deaddr}, #{member_phone}) 
 			
 	</insert>
+	
+	<select id="login" resultType="com.jsmall.domain.MemberVO">
+		
+		SELECT 
+			MEMBER_ID, MEMBER_NAME, MEMBER_EMAIL, MEMBER_PASSWORD, MEMBER_ZIPCODE, MEMBER_ADDR, MEMBER_DEADDR, MEMBER_PHONE, MEMBER_POINT, MEMBER_LASTLOGIN, MEMBER_DATESUB, MEMBER_UPDATEDATE
+		FROM 
+			MEMBER_TABLE WHERE MEMBER_ID = #{member_id}
+		
+	</select>
 </mapper>

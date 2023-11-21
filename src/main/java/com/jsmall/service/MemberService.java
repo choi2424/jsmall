@@ -8,5 +8,9 @@ public interface MemberService {
 	
 	void join(MemberVO vo);
 	
-	MemberVO login(String member_id);
+	MemberVO login(String member_id);	
+	
+	void modify(MemberVO vo);
+	
+	void delMember(String member_id);
 }

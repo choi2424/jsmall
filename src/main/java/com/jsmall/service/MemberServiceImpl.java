@@ -28,6 +28,19 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public MemberVO login(String member_id) {
 		// TODO Auto-generated method stub
+		
 		return memberMapper.login(member_id);
+	}
+
+	@Override
+	public void modify(MemberVO vo) {
+		// TODO Auto-generated method stub
+		memberMapper.modify(vo);
+	}
+
+	@Override
+	public void delMember(String member_id) {
+		// TODO Auto-generated method stub
+		memberMapper.delMember(member_id);
 	}
 }

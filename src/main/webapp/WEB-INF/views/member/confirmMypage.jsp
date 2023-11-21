@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Hugo 0.101.0">
-    <title>JS Mall 회원수정</title>
+    <title>회원 정보 인증</title>
 
     <!-- Bootstrap core CSS -->
     <%@include file="/WEB-INF/views/comm/plugin2.jsp" %>
@@ -47,10 +47,10 @@
   <div class="text-center">
     <div class="box box-primary">
       <div class="box-header with-border">
-        <h3 class="box-title">회원수정 인증확인</h3>
+      <h3 class="box-title">마이페이지 인증확인</h3>
       </div>
       
-      <form role="form" id="confirmModifyForm" method="post" action="/member/confirmModify">
+      <form role="form" id="confirmMypageForm" method="post" action="/member/confirmMypage">
       <div class="box-body">
         <div class="form-group row">
           <label for="member_id" class="col-2">아이디</label>
@@ -67,12 +67,11 @@
       </div>
       
       <div class="box-footer">
-        <button type="button" id="btn_modify" class="btn btn-primary">로그인</button>
+      <button type="submit" id="btn_mypage" class="btn btn-primary">확인</button>
       </div>
-    </form>
-    </div>
+      </form>
+      </div>
   </div>
-</div>
   
  <%@include file="/WEB-INF/views/comm/footer.jsp" %> 
 
@@ -81,13 +80,13 @@
   <script>
 
     let msg = "${msg}";
-    let session_Member_id = "${sessionScope.loginOn.getMember_id()}"
-    let confirmModifyForm = $("#confirmModifyForm");
+    let sessionMember_id = "${loginOn.getMember_id()}"
+
     if(msg != "") {
       alert(msg);
     }
 
-    $("#btn_modify").click(() => {
+    $("#btn_mypage").click(() => {
       if($("#member_id").val() == "") {
         alert("아이디를 입력해 주세요.");
         $("#member_id").focus();
@@ -96,13 +95,11 @@
         alert("비밀번호를 입력해 주세요.");
         $("#member_password").focus();
         return false;
-      }else if($("#member_id").val() != session_Member_id) {
+      }else if($("#member_id").val() != sessionMember_id) {
         alert("아이디를 다시 확인 해 주세요.");
         $("#member_id").focus();
         return false;
       }
-
-      confirmModifyForm.submit();
     })
 
 

@@ -32,4 +32,25 @@
 			MEMBER_TABLE WHERE MEMBER_ID = #{member_id}
 		
 	</select>
+		
+	<update id="modify" parameterType="com.jsmall.domain.MemberVO">
+		
+		UPDATE 
+			MEMBER_TABLE
+		SET 
+		    MEMBER_EMAIL = #{member_email},MEMBER_ZIPCODE = #{member_zipcode},MEMBER_ADDR = #{member_addr},MEMBER_DEADDR = #{member_deaddr},
+		    MEMBER_PHONE = #{member_phone},MEMBER_UPDATEDATE = sysdate
+		WHERE 
+			MEMBER_ID = #{member_id}
+	</update>
+	
+	<delete id="delMember" parameterType="String">
+		
+		DELETE 
+			MEMBER_TABLE
+		WHERE 
+			MEMBER_ID = #{member_id}
+		
+	</delete>
+	
 </mapper>

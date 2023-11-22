@@ -5,11 +5,11 @@
 <header class="main-header">
 
     <!-- Logo -->
-    <a href="/admin/admin_menu" class="logo">
+    <a href="/admin/admin_main" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
       <span class="logo-mini"><b>A</b>LT</span>
       <!-- logo for regular state and mobile devices -->
-      <span class="logo-lg"><b>Admin</b>DocMall</span>
+      <span class="logo-lg"><b>Admin</b>JS Mall</span>
     </a>
 
     <!-- Header Navbar -->

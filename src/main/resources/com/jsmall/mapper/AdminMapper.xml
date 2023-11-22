@@ -4,15 +4,24 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jsmall.mapper.AdminMapper">
 	
-	<select id="ad_login" resultType="com.jsmall.domain.AdminVO">
-		
+	<select id="ad_login" parameterType="String" resultType="com.jsmall.domain.AdminVO">
+	
 		SELECT 
-			ADMIN_ID,ADMIN_PW, ADMIN_VISIT_DATE 
+			ADMIN_ID, ADMIN_PW, ADMIN_VISIT_DATE 
 		FROM 
 			ADMIN_TABLE 
 		WHERE 
 			ADMIN_ID = #{admin_id}
 		
 	</select>
-
+	
+	<update id="admin_visit_date" parameterType="String">
+		UPDATE
+			ADMIN_TABLE
+		SET
+			ADMIN_VISIT_DATE = sysdate
+		WHERE
+			ADMIN_ID = #{admin_id}
+	</update>
+	
 </mapper>

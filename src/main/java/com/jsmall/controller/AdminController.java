@@ -47,22 +47,40 @@ public class AdminController {
 				// 로그인 성공결과로 서버측의 메모리를 사용하는 세션형태작업
 				session.setAttribute("adminStatus", db_vo);
 				// 로그인 시간 업데이트
+				
 				adminservice.admin_visit_date(a_vo.getAdmin_id());
 				
-				url = "/admin/admin_menu"; //관리자 메인페이지 주소
+				url = "/admin/admin_main"; //관리자 메인페이지 주소
 			}else {
 				// 비밀번호가 일치하지 않음
-				url = "/admin/intro"; // 로그인 폼주소
+				url = "/admin/ad_login"; // 로그인 폼주소
 				msg = "failPW";
 				rttr.addFlashAttribute("msg", msg); // 로그인 폼 jsp파일에서 사용목적
 			}
 		}else {
 			// 아이디가 일치하지 않음
-			url = "/admin/intro"; // 로그인 폼주소
+			url = "/admin/ad_login"; // 로그인 폼주소
 			msg = "failID";
 			rttr.addFlashAttribute("msg", msg);
 		}
 		
 		return "redirect:" + url;
 	}
+	
+	// 어드민 메인페이지 폼
+	@GetMapping("/admin_main")
+	public void admin_main() {
+		
+	}
+	
+	// 어드민 로그아웃
+	// 로그아웃
+	@GetMapping("/logout")
+	public String logout(HttpSession session) {
+		
+		session.invalidate();
+		
+		return "redirect:/admin/ad_login";
+	}
+
 }

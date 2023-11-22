@@ -18,4 +18,12 @@ public class AdminServiceImpl implements AdminService {
 		// TODO Auto-generated method stub
 		return adminMapper.ad_login(admin_id);
 	}
+
+	@Override
+	public void admin_visit_date(String admin_id) {
+		// TODO Auto-generated method stub
+		adminMapper.admin_visit_date(admin_id);
+	}
+	
+	
 }

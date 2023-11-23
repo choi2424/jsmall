@@ -26,19 +26,11 @@ public class FileUtils {
 		
 		String str = sdf.format(date);
 		
-		// File.separator : 각 OS별로 경로구분자를 반환
-		// 유닉스 , 맥, 리눅스 구분자 / 예 > "2023-11-02" -> "2023/11/02"
-		// 윈도우즈 구분자 \ 예 > "2023-11-02" -> "2023\11\02"
-		return str.replace("-", File.separator); // 예 "2023-11-02"
+		return str.replace("-", File.separator); 
 		
 	}
 	
 	// 서버에 파일업로드 기능 및 업로드
-	/*
-	    String uploadFolder : 서버측의 업로드 될 폴더 C:\\dev\\upload\\product\\
-	 	String dateFolder : 이미지 파일을 저장할 날짜 폴더명  2023\11\03
-	 	MultipartFile uploadFile : 업로드된 파일을 참조하는 객체
-	*/
 	public static String uploadFile(String uploadFolder,String dateFolder,MultipartFile uploadFile) {
 		
 		String realUploadFileName = ""; // 실제 업로드만 파일이름(파일이름 중복방지)
@@ -65,31 +57,22 @@ public class FileUtils {
 			uploadFile.transferTo(saveFile);
 			
 			// Thumbnail 작업
-			// 원본이미지가 파일크기가 커서, 브라우저에 리스트로 사용시 로딩되는 시간이 길어진다
-			// 원본이미지를 파일크기와 해상도를 낮추어 작은형태의 이미지로 만드는 것
 			if(checkImageType(saveFile)) { // 첨부된 파일이 이미지일 경우라면 
 				
 				// 파일출력스트림 클래스
-				// 밑에줄만 실행이 되면, 파일이 생성. 0KB
 				FileOutputStream thumbnail = new FileOutputStream(new File(file,"s_" + realUploadFileName));
 				
-				// 썸네일 작업기능 라이브러리에서 제공하는 클래스 pom.xml참고
 				// 원본이지미파일의 내용을 스트링방식으로 읽어서 , 썸네일 이미지파일에 쓰는작업
-				// Thumbnailator.createThumbnail(원본 이미지파일의 입력스트링,썸네일 파일,100,100);
 				Thumbnailator.createThumbnail(uploadFile.getInputStream(),thumbnail,100,100);
 				
 				thumbnail.close();
 			}
 		} catch (Exception e) {
-			e.printStackTrace(); // 파일 업로드시 예외가 발생되면 , 예외정보를 출력
+			e.printStackTrace(); 
 		}
-		
-		
-		
-		return realUploadFileName; // 상품테이블에 상품이미지명으로 저장.
+						
+		return realUploadFileName;
 	}
-	
-	// 자바스크립트로 업로드되는 파일의 확작자를 이용하여 이미지파일만 파일첨부가 가능하도록 작업을 할 수가 있다.
 	// 업로드되는 파일구분 (이미지 파일 또는 일반파일 구분)
 	private static boolean checkImageType(File saveFile) {
 		

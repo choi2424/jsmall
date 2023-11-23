@@ -1,14 +1,29 @@
 package com.jsmall.controller;
 
-import javax.annotation.Resource;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.util.List;
 
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.jsmall.domain.ProductVO;
+import com.jsmall.dto.Criteria;
+import com.jsmall.dto.PageDTO;
 import com.jsmall.service.AdProductService;
 import com.jsmall.util.FileUtils;
 
@@ -55,9 +70,98 @@ public class AdProductController {
 		return "redirect:/admin/product/pro_list";
 	}
 	
+	// 상품등록 폼 이미지 등록
+	@PostMapping("/imageUpload")
+	public void imageUpload(HttpServletRequest req, HttpServletResponse res, MultipartFile upload) {
+		
+		OutputStream out = null;
+		PrintWriter printWriter = null; 
+				
+		// 클라이언트에게 보내는 응답설정
+		res.setCharacterEncoding("utf-8");
+		res.setContentType("text/html; charset=utf-8");
+		
+		try {
+			
+			// 1) 파일 업로드 작업
+			String fileName = upload.getOriginalFilename(); // 클라이언트에서 전송한 파일이름
+			byte[] bytes = upload.getBytes(); // 업로드 한 파일을 byte배열로 읽어들임.
+			
+			String ckUploadPath = uploadCKPath + fileName;
+			
+			log.info("CKEditor파일경로 : " + ckUploadPath);
+			
+			out = new FileOutputStream(new File(ckUploadPath)); // 0kb 파일생성
+			
+			out.write(bytes); // 출력스트림 작업
+			out.flush();
+			
+			// 2) 파일 업로드 작업후 파일정보를 CKEditor로 보내는 작업
+			printWriter = res.getWriter();
+			
+			// 브라우저의 CKEditor에서 사용한 파일정보를 참조하는 경로설정
+	        String fileUrl = "/ckupload/" + fileName;
+
+	        printWriter.println("{\"filename\":\"" +  fileName + "\", \"uploaded\":1,\"url\":\"" + fileUrl + "\"}");
+	        printWriter.flush();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if(out != null) {
+				try {
+					out.close();
+				} catch (Exception e2) {
+					e2.printStackTrace();
+				}
+			}
+			if(printWriter != null) printWriter.close();
+		}
+	}
+	
 	// 관리자 상품목록
 	@GetMapping("/pro_list")
-	public void pro_list() {
+	public void pro_list(Criteria cri,Model model) throws Exception {
+		cri.setAmount(5);
+		
+		List<ProductVO> pro_list = adProductService.pro_list(cri);
+		
+		pro_list.forEach(vo ->{
+			vo.setPro_up_folder(vo.getPro_up_folder().replace("\\", "/"));
+		});
+		
+		model.addAttribute("pro_list",pro_list);
+		
+		int totelCount = adProductService.getTotelCount(cri);
+		model.addAttribute("pageMaker",new PageDTO(cri, totelCount));
+	}
+	
+	// 상품 리스트에서 보여줄 이미지 <img sec="매핑주소">
+	@ResponseBody
+	@GetMapping("/imageDisplay") // /admin/product/imageDisplay
+	public ResponseEntity<byte[]> imgDisplay(String dateFolderName, String fileName) throws Exception {
+			
+		return FileUtils.getFile(uploadPath + dateFolderName, fileName);
+	}
+	
+	// 상품 리스트에서 체크된 상품 수정
+	@ResponseBody
+	@PostMapping("pro_checked_modify1")
+	public ResponseEntity<String> pro_checked_modify1(
+			@RequestParam("pro_num_arr[]") List<Integer> pro_num_arr,
+			@RequestParam("pro_price_arr[]") List<Integer> pro_price_arr,
+			@RequestParam("pro_buy_arr[]") List<String> pro_buy_arr
+			) throws Exception {
+		
+		log.info("상품번호목록" + pro_buy_arr);
+		
+		ResponseEntity<String> entity = null;
+		
+		adProductService.pro_checked_modify1(pro_num_arr, pro_price_arr, pro_buy_arr);
+		
+		entity = new ResponseEntity<String>("success",HttpStatus.OK);
+		
+		return entity;
 		
 	}
 }

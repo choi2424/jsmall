@@ -10,7 +10,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>DocMall  | Admin</title>
+  <title>JS Mall  | Admin</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 
@@ -135,8 +135,7 @@ desired effect
               <div class="box-footer clearfix">
                 <div class="row">
                   <div class="col-md-4">
-                    <button type="button" class="btn btn-primary" id="btn_check_modify1" role="button">체크상품수정1</button>
-                    <button type="button" class="btn btn-primary" id="btn_check_modify2" role="button">체크상품수정2</button>
+                    <button type="button" class="btn btn-primary" id="btn_check_modify1" role="button">체크상품수정</button>
                   </div>
                   <div class="col-md-6 text-center">
                     <nav aria-label="...">

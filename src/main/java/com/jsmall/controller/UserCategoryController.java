@@ -24,19 +24,19 @@ public class UserCategoryController {
 	private final UserCategoryService userCategoryService;
 	
 	// 2차 카테고리 정보
-		@GetMapping("/secondCategory/{cg_parent_code}")
-		public ResponseEntity<List<CategoryVO>> secondCategory(@PathVariable("cg_parent_code")Integer cg_parent_code) throws Exception{
+	@GetMapping("/secondCategory/{cg_parent_code}")
+	public ResponseEntity<List<CategoryVO>> secondCategory(@PathVariable("cg_parent_code")Integer cg_parent_code) throws Exception{
 			
 //			log.info("1차카테고리 코드 : " + cg_parent_code);
 			
-			ResponseEntity<List<CategoryVO>> entity = null;
+		ResponseEntity<List<CategoryVO>> entity = null;
 			
-			entity = new ResponseEntity<List<CategoryVO>>(userCategoryService.secondCategoryList(cg_parent_code), HttpStatus.OK);
+		entity = new ResponseEntity<List<CategoryVO>>(userCategoryService.secondCategoryList(cg_parent_code), HttpStatus.OK);
 			
-			// List<CategoryVO> list = adCategoryService.secondCategoryList(cg_parent_code)
-			// list객체 -> JSON 로 변환하는 라이브러리.(jackson-databind 라이브러리:pom.xml참고)
+		// List<CategoryVO> list = adCategoryService.secondCategoryList(cg_parent_code)
+		// list객체 -> JSON 로 변환하는 라이브러리.(jackson-databind 라이브러리:pom.xml참고)
 			
-			return entity;
+		return entity;
 			
-		}
+	}
 }

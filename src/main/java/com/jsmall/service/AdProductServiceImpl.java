@@ -41,5 +41,23 @@ public class AdProductServiceImpl implements AdProductService {
 			adProductMapper.pro_checked_modify1(pro_num_arr.get(i), pro_price_arr.get(i), pro_buy_arr.get(i));
 		}
 	}
+
+	@Override
+	public void delete(Integer pro_num) {
+		// TODO Auto-generated method stub
+		adProductMapper.delete(pro_num);
+	}
+
+	@Override
+	public ProductVO pro_edit_page(Integer pro_num) {
+		// TODO Auto-generated method stub
+		return adProductMapper.pro_edit_page(pro_num);
+	}
+
+	@Override
+	public void pro_edit(ProductVO vo) {
+		// TODO Auto-generated method stub
+		adProductMapper.pro_edit(vo);
+	}
 	
 }

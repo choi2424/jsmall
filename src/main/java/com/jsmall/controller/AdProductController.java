@@ -14,16 +14,22 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.jsmall.domain.CategoryVO;
 import com.jsmall.domain.ProductVO;
 import com.jsmall.dto.Criteria;
 import com.jsmall.dto.PageDTO;
+import com.jsmall.service.AdCategoryService;
 import com.jsmall.service.AdProductService;
 import com.jsmall.util.FileUtils;
 
@@ -37,6 +43,7 @@ import lombok.extern.log4j.Log4j;
 public class AdProductController {
 	
 	private final AdProductService adProductService;
+	private final AdCategoryService adCategoryService;
 	
 	// 메인및 썸네일 이미지 업로드 폴더경로 주입작업
 	@Resource(name = "uploadPath") // servlet-context.xml 에서 bean이름 참조
@@ -164,4 +171,69 @@ public class AdProductController {
 		return entity;
 		
 	}
+	
+	// 어드민 상품목록 삭제
+	@DeleteMapping("/delete/{pro_num}")
+	public ResponseEntity<String> delete(@PathVariable("pro_num") Integer pro_num) {
+		
+		ResponseEntity<String> entity = null;
+		
+		adProductService.delete(pro_num);
+		
+		entity = new ResponseEntity<String>("success",HttpStatus.OK);
+		
+		return entity;
+	}
+	
+	// 상품수정 폼
+	@GetMapping("/pro_edit")
+	public void pro_edit(@ModelAttribute("cri") Criteria cri,Integer pro_num,Model model) {
+		
+		
+		ProductVO p_vo = adProductService.pro_edit_page(pro_num);
+		
+		p_vo.setPro_up_folder(p_vo.getPro_up_folder().replace("\\", "/")); // 이스케이프 시퀀스 문자
+		model.addAttribute("productVO", p_vo);
+		
+		CategoryVO firstCategory = adCategoryService.get(p_vo.getCg_code());
+		model.addAttribute("first_category", firstCategory);
+		
+		// 1차카테고리를 부모로 둔 2차카테고리 정보. 예 > PANTS(2)
+		model.addAttribute("second_categoryList", adCategoryService.secondCategoryList(firstCategory.getCg_parent_code()));
+		
+		
+	}
+	
+	// 상품수정
+	@PostMapping("/pro_edit")
+	public String pro_edit(Criteria cri,ProductVO vo,MultipartFile uploadFile ,RedirectAttributes rttr) throws Exception{
+		
+		// 상품 리스트에서 사용할 정보(검색 페이징정보)
+		log.info("검색 페이징 정보" + cri);
+		// 상품 수정내용
+		log.info("상품수정내용" + vo);
+		
+		vo.setPro_up_folder(vo.getPro_up_folder().replace("/", "\\"));
+
+		if(!uploadFile.isEmpty()) {
+			
+			// 1)기존 이미지 파일 삭제 작업
+			FileUtils.deleteFile(uploadPath, vo.getPro_up_folder(), vo.getPro_img());
+			// 2)업로드 작업
+			String dateFolder = FileUtils.getDateFolder();
+			String savedFileName = FileUtils.uploadFile(uploadPath, dateFolder, uploadFile);
+			
+			// 3)DB에 저장할 새로운 날짜폴더명 및 이미지명 변경 작업 
+			vo.setPro_img(savedFileName);
+			vo.setPro_up_folder(dateFolder);
+		}
+		
+		// DB연동작업
+		adProductService.pro_edit(vo);
+		
+		
+		
+		return "redirect:/admin/product/pro_list" + cri.getListLink();
+	}
+
 }

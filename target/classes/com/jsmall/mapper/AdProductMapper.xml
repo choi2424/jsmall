@@ -78,4 +78,46 @@
 		WHERE 
 			PRO_NUM = #{pro_num}
 	</update>
+	
+	<delete id="delete">
+		
+		DELETE
+			PRODUCT_TBL
+		WHERE
+			PRO_NUM = #{pro_num}
+			
+	</delete>
+	
+	<select id="pro_edit_page" resultType="com.jsmall.domain.ProductVO">
+		
+		select 
+			PRO_NUM, CG_CODE, PRO_NAME, PRO_PRICE, PRO_DISCOUNT, PRO_PUBLISHER, PRO_CONTENT, PRO_UP_FOLDER, PRO_IMG, PRO_AMOUNT, PRO_BUY, PRO_DATE, PRO_UPDATEDATE
+		from
+			PRODUCT_TBL
+		where 
+			pro_num = #{pro_num}
+			
+	</select>
+	
+	<update id="pro_edit">
+ 		
+		update
+			PRODUCT_TBL
+		set
+			CG_CODE = #{cg_code},
+			PRO_NAME = #{pro_name},
+			PRO_PRICE = #{pro_price}, 
+			PRO_DISCOUNT = #{pro_discount}, 
+			PRO_PUBLISHER = #{pro_publisher}, 
+			PRO_CONTENT = #{pro_content}, 
+			PRO_UP_FOLDER = #{pro_up_folder}, 
+			PRO_IMG = #{pro_img}, 
+			PRO_AMOUNT = #{pro_amount}, 
+			PRO_BUY = #{pro_buy},
+			PRO_UPDATEDATE = sysdate
+		where
+			pro_num = #{pro_num}
+			
+			
+	</update>
 </mapper>

@@ -104,7 +104,7 @@ desired effect
                         <td><input type="checkbox" name="check" value="${productVO.pro_num}"/></td>
                         <td>${productVO.pro_num }</td>
                         <td>
-                          <a class="move" href="#" data-bno="${productVO.pro_num}"><img src="/admin/product/imageDisplay?dateFolderName=${productVO.pro_up_folder }&fileName=s_${productVO.pro_img }"></a>
+                          <a class="move" href="#" data-pro_num="${productVO.pro_num}"><img src="/admin/product/imageDisplay?dateFolderName=${productVO.pro_up_folder }&fileName=s_${productVO.pro_img }"></a>
                           <a class="move pro_name" href="#" data-bno="${productVO.pro_num}">${ productVO.pro_name }</a>
                         </td>
                         <td><input type="text" name="pro_price" value="${productVO.pro_price }" /></td>
@@ -115,8 +115,8 @@ desired effect
                             <option value="N" ${productVO.pro_buy  == "N" ? 'selected' : ''}>판매불가능</option>
                           </select>
                         </td>
-                        <td><button type="button" class="btn btn-primary" name="btn_pro_edit">수정</button></td>
-                        <td><button type="button" class="btn btn-danger btn_pro_del">삭제</button></td>
+                        <td><button type="button" data-pro_num="${productVO.pro_num}" class="btn btn-primary" name="btn_pro_edit">수정</button></td>
+                        <td><button type="button" data-pro_num="${productVO.pro_num}" class="btn btn-danger btn_pro_del">삭제</button></td>
                       </tr>
                     </c:forEach>
                   </tbody>
@@ -128,7 +128,6 @@ desired effect
                   <input type="hidden" name="amount" id="amount" value="${pageMaker.cri.amount}" />
                   <input type="hidden" name="type" id="type" value="${pageMaker.cri.type}" />
                   <input type="hidden" name="keyword" id="keyword" value="${pageMaker.cri.keyword}" />
-                  <input type="hidden" name="pro_num" id="pro_num" />
                 </form>
               </div>
 
@@ -343,49 +342,6 @@ desired effect
       });
     });
 
-    $("#btn_check_modify2").on("click",function() {
-      //체크박스 유무 확인
-      if($("input[name='check']:checked").length == 0) {
-        alert("수정할 상품을 체크하세요.");
-        return;
-      }
-
-      // 배열 문법
-      let pro_num_arr = []; // 체크된 상품코드 배열
-      let pro_price_arr = []; // 체크된 상품가격 배열
-      let pro_buy_arr = []; // 체크된 상품진열 배열
-
-      // 데이터행에서 체크된 체크박스 선택자
-      $("input[name='check']:checked").each(function() {
-        pro_num_arr.push($(this).val());
-        // pro_price_arr.push($(this).parent().parent()); 의 this는 체크박스를의미 첫번째 parent는 td 그다음 parent tr을 의미한다
-        pro_price_arr.push($(this).parent().parent().find("input[name='pro_price']").val());
-        pro_buy_arr.push($(this).parent().parent().find("select[name='pro_buy']").val());
-      });
-
-      console.log("상품코드",pro_num_arr);
-      console.log("상품가격",pro_price_arr);
-      console.log("상품진열",pro_buy_arr);
-      
-      $.ajax({
-        url: '/admin/product/pro_checked_modify2', // 체크상품수정 스프링 매핑주소
-        type:'post', 
-        data:{pro_num_arr: pro_num_arr ,pro_price_arr: pro_price_arr,pro_buy_arr : pro_buy_arr},
-        dataType : 'text',  //스프링에서 받아오는 값의 타입 text ,html ,json,xml 등등
-        success: function(result){
-          if(result == "success"){
-            alert("체크상품이 수정되었습니다.");
-
-            // DB에서 다시 불러오는 작업
-
-            actionForm.attr("method","get");
-            actionForm.attr("action","/admin/product/pro_list");
-            actionForm.submit();
-          }
-        }
-      });
-    });
-
     $("#btn_pro_insert").click(function() { 
       location.href = "/admin/product/pro_insert";
     });
@@ -394,10 +350,11 @@ desired effect
     $("button[name='btn_pro_edit']").on("click",function() {
       
       //수정 상품코드
-      let pro_num = $(this).parent().parent().find("input[name='check']").val();
+      let pro_num = $(this).data("pro_num");
 
-      console.log(pro_num);
+      // console.log(pro_num);
 
+      
       // 뒤로가기 클릭후 다시 수정버튼 클릭시 코드 중복되는 부분때문에 제거
       actionForm.find("input[name=pro_num]").remove();
 
@@ -414,24 +371,28 @@ desired effect
     // 이 함수 내에서의 this는 이 클릭 이벤트가 발생한 요소를 가리킴
     $(".btn_pro_del").on("click",function() {
 
-      // text() : 입력양식태그가 아닌 일반태그의 값을 변경하거나 읽을 때 사용
-      let pro_name = $(this).parent().parent().find(".pro_name").text();
-      if(!confirm(pro_name + "상품을 삭제하시겠습니까?"))return;
+      let pro_num = $(this).data("pro_num");
 
-      // val() : input, select, textarea 태그의 값을 변경하거나 읽을 때 사용
-      let pro_num = $(this).parent().parent().find("input[name='check']").val();
-      console.log("상품코드",pro_num);
+      // console.log(pro_num);
+      if(!confirm("상품을 삭제하시겠습니까?")) return;
 
-      // 뒤로가기 클릭후 다시 수정버튼 클릭시 코드 중복되는 부분때문에 제거
-      actionForm.find("input[name=pro_num]").remove();
-
-      // <input type="hidden" name="pro_num" id="pro_num" />
-      actionForm.append('<input type="hidden" name="pro_num" id="pro_num" value="' + pro_num + '" />');
-      
-      actionForm.attr("method","post");
-      actionForm.attr("action","/admin/product/pro_delete");
-      actionForm.submit();
-
+      $.ajax({
+        url: '/admin/product/delete/' + pro_num,
+        headers: {
+          "Content-Type" : "application/json", "X-HTTP-Method-Override" : "DELETE"
+        },
+        type: 'delete',
+        dataType: 'text',
+        success: function(result) {
+          if(result == 'success') {
+            alert("상품이 삭제되었습니다");
+            
+            actionForm.attr("method","get");
+            actionForm.attr("action","/admin/product/pro_list");
+            actionForm.submit();
+          }
+        }
+      })
     });
 
   });

@@ -10,7 +10,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>DocMall  | Admin</title>
+  <title>JS Mall  | 상품수정</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <%@include file="/WEB-INF/views/admin/include/plugin1.jsp" %>
@@ -49,10 +49,6 @@ desired effect
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>상품 수정</h1>
-      <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
-        <li class="active">Here</li>
-      </ol>
     </section>
 
     <!-- Main content -->
@@ -61,7 +57,7 @@ desired effect
         <div class="col-md-12">
           <div class="box box-primary">
             <div class="box-header with-border">
-              <h3 class="box-title mt-5">Product Edit</h3>
+              <h3 class="box-title mt-5">상품 수정</h3>
             </div>
             <form role="form" id="editForm" method="post" action="/admin/product/pro_edit" enctype="multipart/form-data">
               <div class="box-body">
@@ -113,7 +109,7 @@ desired effect
                 <div class="form-group row">
                   <label class="col-sm-2 col-form-label">상품이미지</label> 
                   <div class="col-sm-4">
-                    <input type="file" class="form-control" name="uploadFile" id="uploadFile">
+                    <input type="file" class="form-control" name="uploadFile" id="uploadFile" value="${productVO.pro_img}">
                     <!-- 상품 이미지 변경시 기존이미지 삭제를 위하여 사용됨 -->
                     <input type="hidden" name="pro_up_folder" value="${productVO.pro_up_folder}">
                     <input type="hidden" name="pro_img" value="${productVO.pro_img}">
@@ -126,7 +122,7 @@ desired effect
                 <div class="form-group row">
                   <label for="pro_content" class="col-sm-2 col-form-label">상품설명</label> 
                   <div class="col-sm-10">
-                    <textarea class="form-control" id="pro_content" name="pro_content" rows="3">${productVO.pro_publisher}"</textarea>
+                    <textarea class="form-control" id="pro_content" name="pro_content" rows="3">${productVO.pro_content}"</textarea>
                   </div>
                 </div>
                 <div class="form-group row">
@@ -147,10 +143,10 @@ desired effect
                 <div class="form-group">
                   <ul class="uploadedlist"></ul>
                 </div>
-              </div>
-              <div class="text-center">
-                <button type="submit" id="btn_modify" class="btn btn-primary">상품수정</button>
-                <button type="button" id="btnCancel" class="btn btn-primary">취소</button>
+                <div class="text-center">
+                  <button type="submit" id="btn_modify" class="btn btn-primary">상품수정</button>
+                  <button type="button" id="btnCancel" class="btn btn-primary">취소</button>
+                </div>
               </div>
             </form>
           </div>
@@ -315,21 +311,21 @@ desired effect
       if(!confirm("취소 하시겠습니까?")) return;
       history.back();
     });
-    /*
+    
     $("#btn_modify").click(function() { 
       
       // 뒤로가기 클릭후 다시 수정버튼 클릭시 코드 중복되는 부분때문에 제거
-      editForm.find("input[name=pro_num]").remove();
+      // editForm.find("input[name=pro_num]").remove();
 
       // <input type="hidden" name="pro_num" id="pro_num" />
       // actionForm.append('<input type="hidden" name="pro_num" id="pro_num" value="' + pro_num + '" />');
       
-      editForm.attr("method","get");
+      editForm.attr("method","post");
       editForm.attr("action","/admin/product/pro_list");
       
       editForm.submit();
     });
-    */
+    
   });
 </script>
 </body>

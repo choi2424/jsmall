@@ -16,4 +16,10 @@ public interface AdProductService {
 	int getTotelCount(Criteria cri);
 	
 	void pro_checked_modify1(List<Integer> pro_num_arr,List<Integer> pro_price_arr,List<String> pro_buy_arr);
+	
+	void delete(Integer pro_num);
+	
+	ProductVO pro_edit_page(Integer pro_num);
+	
+	void pro_edit(ProductVO vo);
 }

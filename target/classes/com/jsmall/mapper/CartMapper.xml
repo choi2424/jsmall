@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jsmall.mapper.CartMapper">
+	
+	<insert id="cart_add">
+		
+		merge into 
+			cart_tbl
+		using 
+			dual
+		on 
+			(member_id = #{member_id} and PRO_NUM = #{pro_num})
+		when 
+			matched then
+    	update
+        	set CART_AMOUNT = CART_AMOUNT + #{cart_amount}
+		when 
+			not matched then
+    	insert
+    		(cart_code, pro_num, member_id, cart_amount)
+    	values
+    		(seq_cart_code.nextval,#{pro_num},#{member_id},#{cart_amount})
+	
+	</insert>
+	
+	<select id="cart_list" resultType="com.jsmall.dto.CartDTOList">
+	
+		SELECT 
+			C.CART_CODE, C.PRO_NUM, C.CART_AMOUNT ,P.PRO_NAME, P.PRO_PRICE, P.PRO_IMG, P.PRO_DISCOUNT, P.PRO_UP_FOLDER
+		FROM 
+			PRODUCT_TBL P INNER JOIN CART_TBL C ON P.PRO_NUM = C.PRO_NUM
+		WHERE 
+			C.MEMBER_ID = #{member_id}
+		
+	</select>
+	
+	<delete id="cart_list_del">
+	
+		delete
+			cart_tbl
+		where
+			CART_CODE = #{cart_code}
+			
+	</delete>
+	
+	<update id="amount_change">
+		
+		update
+			cart_tbl
+		set
+			cart_amount = #{cart_amount}
+		where
+			cart_code = #{cart_code}
+	</update>
+	
+	<delete id="cart_checked_del">
+		
+		delete
+			cart_tbl
+		where
+			CART_CODE = #{cart_code}
+		
+	</delete>
+	
+</mapper>

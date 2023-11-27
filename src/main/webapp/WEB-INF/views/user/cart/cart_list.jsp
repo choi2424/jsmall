@@ -79,8 +79,7 @@
             </span>
           </td>
           <td>
-            <button type="button" name="btn_ajax_cart_del" class="btn btn-danger">삭제(ajax사용)</button>
-            <button type="button" name="btn_nonAjax_cart_del" class="btn btn-danger">삭제(ajax미사용)</button>
+            <button type="button" name="btn_ajax_cart_del" class="btn btn-danger">삭제</button>
           </td>
         </tr>
       </c:forEach>
@@ -240,17 +239,6 @@
           }
         });
       }
-    });
-
-    // 장바구니 삭제 ajax미사용
-    $("button[name='btn_nonAjax_cart_del']").on("click",function() {
-
-      if(!confirm("정말 삭제하시겠습니까?")) return;
-
-      let cart_code = $(this).parent().parent().find("input[name='cart_code']").val();
-
-      location.href = "/user/cart/cart_list_del?cart_code=" + cart_code;
-
     });
 
     // 주문 정보 페이지

@@ -1,18 +1,20 @@
 package com.jsmall.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.jsmall.domain.AdminVO;
+import com.jsmall.dto.AdOrderDTO;
+import com.jsmall.service.AdOrderService;
 import com.jsmall.service.AdminService;
 
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,7 @@ public class AdminController {
 	
 	private final AdminService adminservice;
 	private final PasswordEncoder passwordEncoder;
+	private final AdOrderService adOrderService;
 	
 	// 어드민 로그인 폼
 	@GetMapping("/ad_login")
@@ -72,8 +75,11 @@ public class AdminController {
 	
 	// 어드민 메인페이지 폼
 	@GetMapping("/admin_main")
-	public void admin_main() {
+	public void admin_main(Model model) {
 		
+		List<AdOrderDTO> adOrderDTO = adminservice.order_list();
+		
+		model.addAttribute("adOrderDTO", adOrderDTO);
 	}
 	
 	// 어드민 로그아웃

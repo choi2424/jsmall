@@ -24,4 +24,20 @@
 			ADMIN_ID = #{admin_id}
 	</update>
 	
+	<select id="order_list" resultType="com.jsmall.dto.AdOrderDTO">
+		
+		<![CDATA[
+		select
+			o.ord_code, o.member_id, o.ord_name, o.ord_tel, p.pay_method, o.ord_price, o.ord_regdate
+		from
+			ORDER_TBL o
+			INNER JOIN PAYMENT p ON o.ord_code = p.odr_code
+		WHERE 
+			ROWNUM <= 5
+		order by
+			o.ord_code desc
+		]]>
+		
+	</select>
+	
 </mapper>

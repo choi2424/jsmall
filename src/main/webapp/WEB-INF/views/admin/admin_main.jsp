@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <!--
 This is a starter template page. Use this page to start your new project from
@@ -119,64 +121,30 @@ desired effect
         <section class="sidx_head01">
           <h2>최근 주문내역<a href="" class="btn_small">주문내역 바로가기</a></h2>
           <table>
-          <thead>
-          <tr>
-            <th scope="col">주문번호</th>
-            <th scope="col">주문자명</th>
-            <th scope="col">수령자명</th>
-            <th scope="col">전화번호</th>
-            <th scope="col">결제방법</th>
-            <th scope="col">총주문액</th>
-            <th scope="col">주문일시</th>
-          </tr>
-          </thead>
-          <tbody>
-              <tr class="tr_alignc">
-            <td>23043013364001</td>
-            <td>관리자</td>
-            <td>관리자</td>
-            <td>010-0000-0000</td>
-            <td>무통장</td>
-            <td>36,720</td>
-            <td>2023-04-30 13:37 (일)</td>
-          </tr>
-              <tr class="tr_alignc">
-            <td>23020113403890</td>
-            <td>관리자</td>
-            <td>관리자</td>
-            <td>010-0000-0000</td>
-            <td>무통장</td>
-            <td>23,000</td>
-            <td>2023-02-01 13:40 (수)</td>
-          </tr>
-              <tr class="tr_alignc">
-            <td>22111615313936</td>
-            <td>세글만</td>
-            <td>세글만</td>
-            <td>010-3333-3333</td>
-            <td>무통장</td>
-            <td>60,060</td>
-            <td>2022-11-16 15:31 (수)</td>
-          </tr>
-              <tr class="tr_alignc">
-            <td>22063014203387</td>
-            <td>관리자</td>
-            <td>관리자</td>
-            <td>010-0000-0000</td>
-            <td>무통장</td>
-            <td>218,000</td>
-            <td>2022-06-30 14:21 (목)</td>
-          </tr>
-              <tr class="tr_alignc">
-            <td>22063014170424</td>
-            <td>관리자</td>
-            <td>관리자</td>
-            <td>010-0000-0000</td>
-            <td>무통장</td>
-            <td>218,000</td>
-            <td>2022-06-30 14:18 (목)</td>
-          </tr>
-              </tbody>
+            <thead>
+              <tr>
+                <th scope="col">주문번호</th>
+                <th scope="col">주문자아이디</th>
+                <th scope="col">수령자명</th>
+                <th scope="col">전화번호</th>
+                <th scope="col">결제방법</th>
+                <th scope="col">총주문액</th>
+                <th scope="col">주문일시</th>
+              </tr>
+            </thead>
+            <tbody>
+              <c:forEach items="${adOrderDTO }" var="adOrderDTO">
+                <tr>
+                  <td>${adOrderDTO.ord_code}</td>
+                  <td>${adOrderDTO.member_id}</td>
+                  <td>${adOrderDTO.ord_name}</td>
+                  <td>${adOrderDTO.ord_tel}</td>
+                  <td>${adOrderDTO.pay_method}</td>
+                  <td>${adOrderDTO.ord_price}</td>
+                  <td><fmt:formatDate value='${adOrderDTO.ord_regdate}' pattern='yyyy/MM/dd hh:mm:ss' /></td>
+                </tr>
+              </c:forEach>
+            </tbody>
           </table>
         </section>
       

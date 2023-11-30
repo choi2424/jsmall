@@ -43,4 +43,22 @@ public class MemberServiceImpl implements MemberService {
 		// TODO Auto-generated method stub
 		memberMapper.delMember(member_id);
 	}
+	
+	@Override
+	public String find_id(String member_name,String member_email) {
+		// TODO Auto-generated method stub
+		return memberMapper.find_id(member_name, member_email);
+	}
+
+	@Override
+	public MemberVO find_pw(String member_id, String member_email) {
+		// TODO Auto-generated method stub
+		return memberMapper.find_pw(member_id, member_email);
+	}
+
+	@Override
+	public void change_password(String member_id,String member_password) {
+		// TODO Auto-generated method stub
+		memberMapper.change_password(member_id,member_password);
+	}
 }

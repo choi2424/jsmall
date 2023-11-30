@@ -8,7 +8,7 @@ import lombok.Data;
 public class OrderVO {
 	
 	private Long ord_code; // db의 시퀀스 사용
-	private String mbsp_id; // 인증세션에서 참조
+	private String member_id; // 인증세션에서 참조
 	
 	// 주문정보페이지에서 전송에서 받음
 	private String ord_name;

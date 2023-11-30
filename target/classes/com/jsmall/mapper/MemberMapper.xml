@@ -53,4 +53,37 @@
 		
 	</delete>
 	
+	<select id="find_id" resultType="String">
+		SELECT MEMBER_ID FROM MEMBER_TABLE WHERE MEMBER_NAME = #{member_name} AND MEMBER_EMAIL = #{member_email}
+	</select>
+	
+	<select id="find_pw" resultType="com.jsmall.domain.MemberVO">
+		SELECT 
+			MEMBER_ID, 
+			MEMBER_NAME, 
+			MEMBER_EMAIL, 
+			MEMBER_PASSWORD, 
+			MEMBER_ZIPCODE, 
+			MEMBER_ADDR, 
+			MEMBER_DEADDR, 
+			MEMBER_PHONE, 
+			MEMBER_POINT, 
+			MEMBER_LASTLOGIN, 
+			MEMBER_DATESUB, 
+			MEMBER_UPDATEDATE
+		FROM 
+			MEMBER_TABLE 
+		WHERE 
+			MEMBER_ID = #{member_id} AND MEMBER_EMAIL = #{member_email}
+	</select>
+	
+	<update id="change_password">
+		UPDATE
+			MEMBER_TABLE
+		SET
+			MEMBER_PASSWORD = #{member_password}
+		WHERE
+			MEMBER_ID = #{member_id}
+	</update>
+	
 </mapper>

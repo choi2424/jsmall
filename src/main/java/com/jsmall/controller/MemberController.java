@@ -240,4 +240,79 @@ public class MemberController {
 		}
 		return "redirect:" + url;
 	}
+	
+	// 아이디 찾기 폼
+	@GetMapping("/find_id")
+	public void find_id() {
+		
+	}
+	
+	// 아이디 찾기
+	@PostMapping("/find_id")
+	public String find_id(String member_name,String member_email,RedirectAttributes rttr) {
+		String msg = "";
+		String url = "";
+		String result = memberService.find_id(member_name, member_email);
+		if(result == null) {
+			msg = "이름이나 이메일이 정확하지 않습니다";
+			url = "/member/find_id";
+			rttr.addFlashAttribute("msg", msg);
+		}else {
+			msg = "아이디는" + result + "입니다";
+			url = "/member/login";
+			rttr.addFlashAttribute("msg", msg);
+		}
+		return "redirect:" + url;
+	}
+	
+	// 비밀번호 찾기 폼
+	@GetMapping("/find_pw")
+	public void find_pw() {
+		
+	}
+	
+	// 비밀번호 찾기
+	@PostMapping("/find_pw")
+	public String find_pw(String member_id,String member_email,RedirectAttributes rttr,HttpSession session) {
+		String msg = "";
+		String url = "";
+		MemberVO result = memberService.find_pw(member_id, member_email);
+		if(result == null) {
+			msg = "아이디나 이메일이 정확하지 않습니다";
+			url = "/member/find_pw";
+			rttr.addFlashAttribute("msg", msg);
+		}else {
+			msg = "비밀번호를 변경해주세요";
+			url = "/member/change_password";			
+			rttr.addFlashAttribute("msg", msg);
+			session.setAttribute("change_password", result);
+		}
+		
+		
+		return "redirect:" + url;
+	}
+	
+	// 비밀번호 변경 폼
+	@GetMapping("/change_password")
+	public void change_password() {
+		
+	}
+	
+	// 비밀번호 변경
+	@PostMapping("/change_password")
+	public String change_password(HttpSession session,String member_id,String member_password,RedirectAttributes rttr) {
+		
+		MemberVO vo = (MemberVO)session.getAttribute("change_password");
+		
+		member_id = vo.getMember_id();
+		
+		// db저장
+		memberService.change_password(member_id, passwordEncoder.encode(member_password));
+		
+		session.removeAttribute("change_password");
+		
+		return "redirect:/member/login";
+		
+		
+	}
 }

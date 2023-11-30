@@ -1,8 +1,5 @@
 package com.jsmall.controller;
 
-import java.io.Console;
-
-import javax.mail.Session;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.http.HttpStatus;

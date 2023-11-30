@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jsmall.mapper.AdOrderMapper">
+	
+	<sql id="criteria">
+    	<trim prefix="(" suffix=") AND" prefixOverrides="OR">
+        	<foreach collection="cri.typeArr" item="type">
+            	<trim prefix="OR">
+               		<choose>
+                  		<when test="cri.type == 'N'.toString()">
+                        	ORD_NAME like '%' || #{cri.keyword} || '%'
+                  		</when>
+                  		<when test="cri.type == 'C'.toString()">
+                            ORD_CODE like '%' || #{cri.keyword} || '%'
+                  		</when>
+               		</choose>
+            	</trim>
+         	</foreach>
+      	</trim>
+   	</sql>
+	
+	<sql id="period">
+		<if test="start_date != null and !start_date.equals('')">
+			<![CDATA[
+				ORD_REGDATE >= TO_DATE(#{start_date}) and ORD_REGDATE < TO_DATE(#{end_date}) + 1 and
+			]]>
+		</if>
+	</sql>
+	
+	<select id="order_list" resultType="com.jsmall.domain.OrderVO" parameterType="map">
+    	<![CDATA[
+      	select 
+        	ORD_CODE, MEMBER_ID, ORD_NAME, ORD_ZIPCODE, ORD_ADDR_BASIC, ORD_ADDR_DETAIL, ORD_TEL, ORD_PRICE, ORD_REGDATE, ORD_STATUS, PAYMENT_STATUS
+      	from 
+        	(select /*+INDEX_DESC(ORDER_TBL PK_ORDER_TBL) */
+        		rownum rn, ORD_CODE, MEMBER_ID, ORD_NAME, ORD_ZIPCODE, ORD_ADDR_BASIC, ORD_ADDR_DETAIL, ORD_TEL, ORD_PRICE, ORD_REGDATE, ORD_STATUS, PAYMENT_STATUS
+          	
+          	from 
+            	ORDER_TBL
+          	where 
+        ]]>
+          
+        <include refid="criteria"></include>
+        <include refid="period"></include>
+          
+        <![CDATA[
+            	rownum <= #{cri.pageNum} * #{cri.amount}
+        	)
+		where 
+        	rn > (#{cri.pageNum} -1) * #{cri.amount}
+        ]]>
+   </select>
+   
+   <select id="getTotalCount" resultType="int">
+	 	select count(*) from ORDER_TBL where
+      
+      		<include refid="criteria"></include>
+      		<include refid="period"></include>
+      
+      	ORD_CODE > 0
+   </select>
+   
+   <delete id="order_product_delete">
+   
+   		delete from
+			ORDETAIL_TBL
+		where
+			ord_code = #{ord_code} and pro_num = #{pro_num}
+   
+   </delete>
+   
+   <select id="order_detail_info" parameterType="Long" resultMap="orderDetailProductMap">
+   
+   		SELECT
+        	ot.ORD_CODE, ot.PRO_NUM, ot.DT_AMOUNT,(p.PRO_PRICE - (p.PRO_PRICE * p.PRO_DISCOUNT /100)) * ot.dt_AMOUNT as ord_price,
+          	p.CG_CODE, p.PRO_NAME, p.PRO_PRICE, p.PRO_UP_FOLDER, p.PRO_IMG, p.PRO_AMOUNT, p.PRO_BUY
+      	FROM
+        	  ORDETAIL_TBL ot, PRODUCT_TBL p
+      	WHERE
+        	  ot.PRO_NUM = p.PRO_NUM
+      	AND
+        	  ot.ORD_CODE = #{ord_code}	
+   	
+   </select>
+   
+   <resultMap type="com.jsmall.domain.OrderDetailProductVO" id="orderDetailProductMap">
+   		<collection property="orderDetailVO" resultMap="orderDetailMap"></collection>
+   		<collection property="productVO" resultMap="productMap"></collection>
+   </resultMap>
+   
+   <resultMap type="com.jsmall.domain.OrderDetailVO" id="orderDetailMap">
+   		<id property="ord_code" column="ord_code"/>
+   		<id property="pro_num" column="pro_num"/>
+   		<result property="dt_amount" column="dt_amount"/>
+   		<result property="dt_price" column="dt_price"/>
+   </resultMap>
+   
+   <resultMap type="com.jsmall.domain.ProductVO" id="productMap">
+   		<id property="pro_num" column="pro_num" />
+   		<result property="cg_code" column="cg_code" />
+   		<result property="pro_name" column="pro_name" />
+   		<result property="pro_price" column="pro_price" />
+   		<result property="pro_discount" column="pro_discount" />
+   		<result property="pro_publisher" column="pro_publisher" />
+   		<result property="pro_content" column="pro_content" />
+   		<result property="pro_up_folder" column="pro_up_folder" />
+   		<result property="pro_img" column="pro_img" />
+   		<result property="pro_amount" column="pro_amount" />
+   		<result property="pro_buy" column="pro_buy" />
+   		<result property="pro_date" column="pro_date" />
+   		<result property="pro_updatedate" column="pro_updatedate" />
+   </resultMap>
+   
+   
+   
+</mapper>

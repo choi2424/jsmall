@@ -52,74 +52,36 @@ desired effect
   <div class="content-wrapper">
 
     <!-- Main content -->
-    <section class="content container-fluid">
+    <section class="sidx_head01">
       <div id="main_wrap">
         <section>
-          <h2>전체 주문통계<a href="" class="btn_small">주문내역 바로가기</a></h2>
-          <div class="order_vbx">
-            <dl class="od_bx1">
-              <dt>전체 주문현황</dt>
-              <dd>
-                <p class="ddtit">총 주문건수</p>
-                <p>26</p>
-              </dd>
-              <dd class="total">
-                <p class="ddtit">총 주문액</p>
-                <p>1,710,850</p>
-              </dd>
-            </dl>
-      
-            <dl class="od_bx2">
-              <dt>주문상태 현황</dt>
-              <dd>
-                <p class="ddtit">입금대기</p>
-                <p>0</p>
-              </dd>
-              <dd>
-                <p class="ddtit">입금완료</p>
-                <p>0</p>
-              </dd>
-              <dd>
-                <p class="ddtit">배송준비</p>
-                <p>0</p>
-              </dd>
-              <dd>
-                <p class="ddtit">배송중</p>
-                <p>0</p>
-              </dd>
-              <dd>
-                <p class="ddtit">배송완료</p>
-                <p>1</p>
-              </dd>
-            </dl>
-            <dl class="od_bx2">
-              <dt>구매확정/클래임 현황</dt>
-              <dd>
-                <p class="ddtit">구매미확정</p>
-                <p>0</p>
-              </dd>
-              <dd>
-                <p class="ddtit">취소</p>
-                <p>25</p>
-              </dd>
-              <dd>
-                <p class="ddtit">환불</p>
-                <p>0</p>
-              </dd>
-              <dd>
-                <p class="ddtit">반품</p>
-                <p>0</p>
-              </dd>
-              <dd>
-                <p class="ddtit">교환</p>
-                <p>0</p>
-              </dd>
-            </dl>
-          </div>
+          <h2>전체 주문통계<a href="/admin/order/order_list" class="btn_small">주문목록 바로가기</a></h2>
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">총 주문건수</th>
+                <th scope="col">총 주문액</th>
+                <th scope="col">이달 주문건수</th>
+                <th scope="col">이달 주문액</th>
+                <th scope="col">저번달 주문건수</th>
+                <th scope="col">저번달 주문액</th>
+              </tr>
+            </thead>
+            <tbody style="text-align: center;">
+              <tr>
+                <td>${adCount.total_orders}</td>
+                <td>${adCount.total_order_amount}원</td>
+                <td>${adCount.this_month_orders}</td>
+                <td>${adCount.this_month_order_amount}원</td>
+                <td>${adCount.last_month_orders}</td>
+                <td>${adCount.last_month_order_amount}원</td>
+              </tr>
+            </tbody>
+          </table>
         </section>
       
         <section class="sidx_head01">
-          <h2>최근 주문내역<a href="" class="btn_small">주문내역 바로가기</a></h2>
+          <h2>최근 주문내역<a href="/admin/order/order_list" class="btn_small">주문목록 바로가기</a></h2>
           <table>
             <thead>
               <tr>
@@ -132,7 +94,7 @@ desired effect
                 <th scope="col">주문일시</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody style="text-align: center;">
               <c:forEach items="${adOrderDTO }" var="adOrderDTO">
                 <tr>
                   <td>${adOrderDTO.ord_code}</td>
@@ -140,7 +102,7 @@ desired effect
                   <td>${adOrderDTO.ord_name}</td>
                   <td>${adOrderDTO.ord_tel}</td>
                   <td>${adOrderDTO.pay_method}</td>
-                  <td>${adOrderDTO.ord_price}</td>
+                  <td>${adOrderDTO.ord_price}원</td>
                   <td><fmt:formatDate value='${adOrderDTO.ord_regdate}' pattern='yyyy/MM/dd hh:mm:ss' /></td>
                 </tr>
               </c:forEach>
@@ -151,46 +113,26 @@ desired effect
         <section class="sidx_head01">
           <h2>최근 회원가입<a href="" class="btn_small">회원관리 바로가기</a></h2>
           <table>
-          <thead>
-          <tr>
-            <th scope="col">이름</th>
-            <th scope="col">아이디</th>
-            <th scope="col">레벨</th>
-            <th scope="col">이메일</th>
-            <th scope="col">접속횟수</th>
-            <th scope="col">추천인</th>
-            <th scope="col">가입일시</th>
-          </tr>
-          </thead>
-          <tbody>
-              <tr class="tr_alignc">
-            <td>세글만</td>
-            <td>tubeweb3</td>
-            <td>일반회원</td>
-            <td>tubeweb3@gmail.com</td>
-            <td>44</td>
-            <td>tubeweb1</td>
-            <td>2020-10-04 18:05 (일)</td>
-          </tr>
-              <tr class="tr_alignc">
-            <td>두글만</td>
-            <td>tubeweb2</td>
-            <td>일반회원</td>
-            <td>tubeweb2@gmail.com</td>
-            <td>629</td>
-            <td>admin</td>
-            <td>2020-10-04 18:05 (일)</td>
-          </tr>
-              <tr class="tr_alignc">
-            <td>한글만</td>
-            <td>tubeweb1</td>
-            <td>가맹점</td>
-            <td>tubeweb1@gmail.com</td>
-            <td>682</td>
-            <td>admin</td>
-            <td>2020-10-04 18:04 (일)</td>
-          </tr>
-              </tbody>
+            <thead>
+              <tr>
+                <th scope="col">이름</th>
+                <th scope="col">아이디</th>
+                <th scope="col">전화번호</th>
+                <th scope="col">이메일</th>
+                <th scope="col">가입일시</th>
+              </tr>
+            </thead>
+            <tbody style="text-align: center;">
+              <c:forEach items="${adMember }" var="adMember">
+                <tr>
+                  <td>${adMember.member_name}</td>
+                  <td>${adMember.member_id}</td>
+                  <td>${adMember.member_phone}</td>
+                  <td>${adMember.member_email}</td>
+                  <td><fmt:formatDate value='${adMember.member_datesub}' pattern='yyyy/MM/dd hh:mm:ss' /></td>
+                </tr>
+              </c:forEach>
+            </tbody>
           </table>
         </section>
       </div>

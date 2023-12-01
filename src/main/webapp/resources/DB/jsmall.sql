@@ -347,10 +347,12 @@ WHERE CART_CODE = #{cart_code}
 DELETE FROM CART_TBL
 WHERE CART_CODE = #{cart_code}
 
+
+drop table PAYMENT;
 --5.주문내용 테이블. 구매자의 정보
 CREATE TABLE ORDER_TBL(
         ORD_CODE            NUMBER                  ,--PRIMARY KEY, -- 주문 코드
-        MBSP_ID             VARCHAR2(15)            NOT NULL, -- 구매자 ID
+        MEMBER_ID             VARCHAR2(15)            NOT NULL, -- 구매자 ID
         ORD_NAME            VARCHAR2(30)            NOT NULL, -- 수령자 성명
         ORD_ZIPCODE         CHAR(5)                 NOT NULL, -- 우편주소
         ORD_ADDR_BASIC      VARCHAR2(50)            NOT NULL, -- 주소
@@ -377,7 +379,7 @@ CREATE TABLE ORDETAIL_TBL(
 
 
 
-drop table ORDER_TBL;
+drop table PAYMENT;
 
 -- 주문번호 : 시퀀스생성
 CREATE SEQUENCE SEQ_ORD_CODE;
@@ -387,15 +389,14 @@ drop SEQUENCE SEQ_ORD_CODE;
 CREATE TABLE PAYMENT (
         PAY_CODE            NUMBER          NOT NULL, -- 일련번호
         ODR_CODE            NUMBER          NOT NULL, -- 주문번호
-        MBSP_ID             VARCHAR2(50)    NOT NULL, -- 회원ID
+        MEMBER_ID             VARCHAR2(50)    NOT NULL, -- 회원ID
         PAY_METHOD          VARCHAR2(50)    NOT NULL, -- 결제방식
         PAY_DATE            DATE            NULL,     -- 결제일
         PAY_TOT_PRICE       NUMBER          NOT NULL, -- 결제금액
-        PAY_NOBANK_PRICE    NUMBER          NOT NULL, -- 무통장입금금액
+        PAY_NOBANK_PRICE    NUMBER          NULL, -- 무통장입금금액
         PAY_NOBANK_USER     VARCHAR2(50)    NULL,     -- 무통장입금지명
         PAY_NOBANK          VARCHAR2(50)    NULL,     -- 입금은행
-        PAY_BANK_ACCOUNT    VARCHAR2(20)    NULL      -- 계좌번호  
-        
+        PAY_BANK_ACCOUNT    VARCHAR2(20)    NULL,     -- 계좌번호         
         PAY_MEMO            VARCHAR2(100)   NULL      -- 메모        
 );
 
@@ -433,14 +434,16 @@ VALUES
 --7.리뷰 테이블
 CREATE TABLE REVIEW_TBL(
         REW_NUM         NUMBER,
-        MBSP_ID         VARCHAR2(15)                NOT NULL,
+        MEMBER_ID         VARCHAR2(15)                NOT NULL,
         PRO_NUM         NUMBER                      NOT NULL,
         REW_CONTENT     VARCHAR2(200)               NOT NULL,
         REW_SCORE       NUMBER                      NOT NULL,
         REW_REGDATE     DATE DEFAULT SYSDATE        NOT NULL,
-        FOREIGN KEY(MBSP_ID) REFERENCES MBSP_TBL(MBSP_ID),
+        FOREIGN KEY(MEMBER_ID) REFERENCES MBSP_TBL(MEMBER_ID),
         FOREIGN KEY(PRO_NUM) REFERENCES PRODUCT_TBL(PRO_NUM)
-);ㄴ
+);
+
+drop table REVIEW_TBL;
 
 ALTER TABLE REVIEW_TBL
 ADD CONSTRAINT PK_REVIEW_TBL PRIMARY KEY(REW_NUM);
@@ -492,6 +495,55 @@ VALUES
    AND
        ot.ORD_CODE = #{}
     
+INSERT INTO PAYMENT (
+    PAY_CODE, ODR_CODE, MEMBER_ID, PAY_METHOD, PAY_DATE, PAY_TOT_PRICE, PAY_MEMO ,PAY_NOBANK_PRICE, PAY_NOBANK_USER, PAY_NOBANK, PAY_BANK_ACCOUNT ) 
+VALUES 
+    (SEQ_PAYMENT_CODE.NEXTVAL),2,'user01','무통장입금',sysdate,71725,'' ,71725,'홍길동','국민은행','456-456-4567')
 
-
+-- 어드민 메인페이지 최근 주문목록5개 ROW_NUMBER를 쓴이유 그냥 rounum은 정렬이되고 데이터를뽑아오지못해서 최근데이터를 뽑아오지못함
+select
+			ord_code, member_id, ord_name, ord_tel, pay_method, 
+            TO_CHAR(ord_price, '999,999,999') AS ord_price, ord_regdate,rnum
+		from
+			(
+			select
+				o.ord_code, o.member_id, o.ord_name, o.ord_tel, p.pay_method, o.ord_price, o.ord_regdate,
+				ROW_NUMBER() OVER (ORDER BY o.ord_code DESC) AS rnum
+			from
+				ORDER_TBL o
+				INNER JOIN PAYMENT p ON o.ord_code = p.odr_code
+			)
+		WHERE 
+			rnum <= 5;
+-- 어드민 메인페이지 최근회원가입    
+select
+    MEMBER_NAME,MEMBER_ID,MEMBER_PHONE,MEMBER_EMAIL,MEMBER_DATESUB
+from
+    MEMBER_TABLE
+order by
+    MEMBER_DATESUB desc;
 commit;
+
+SELECT
+    COUNT(O.ORD_CODE),SUM(P.PAY_TOT_PRICE),
+FROM   
+    ORDER_TBL O INNER JOIN PAYMENT P
+    ON o.ord_code = p.odr_code
+
+SELECT
+    -- 총 주문건수 및 총 주문금액
+    COUNT(O.ORD_CODE) AS total_orders,
+    TO_CHAR(SUM(P.PAY_TOT_PRICE),'999,999,999') AS total_order_amount,
+
+    -- 이번 달 주문건수 및 주문금액
+    COUNT(CASE WHEN EXTRACT(YEAR FROM O.ORD_REGDATE) = EXTRACT(YEAR FROM SYSDATE) AND EXTRACT(MONTH FROM O.ORD_REGDATE) = EXTRACT(MONTH FROM SYSDATE) THEN O.ORD_CODE END) AS this_month_orders,
+    TO_CHAR(SUM(CASE WHEN EXTRACT(YEAR FROM O.ORD_REGDATE) = EXTRACT(YEAR FROM SYSDATE) AND EXTRACT(MONTH FROM O.ORD_REGDATE) = EXTRACT(MONTH FROM SYSDATE) THEN P.PAY_TOT_PRICE END),'999,999,999') AS this_month_order_amount,
+
+    -- 저번 달 주문건수 및 주문금액
+    COUNT(CASE WHEN EXTRACT(YEAR FROM O.ORD_REGDATE) = EXTRACT(YEAR FROM ADD_MONTHS(SYSDATE, -1)) AND EXTRACT(MONTH FROM O.ORD_REGDATE) = EXTRACT(MONTH FROM ADD_MONTHS(SYSDATE, -1)) THEN O.ORD_CODE END) AS last_month_orders,
+    TO_CHAR(SUM(CASE WHEN EXTRACT(YEAR FROM O.ORD_REGDATE) = EXTRACT(YEAR FROM ADD_MONTHS(SYSDATE, -1)) AND EXTRACT(MONTH FROM O.ORD_REGDATE) = EXTRACT(MONTH FROM ADD_MONTHS(SYSDATE, -1)) THEN P.PAY_TOT_PRICE END),'999,999,999') AS last_month_order_amount
+FROM   
+    ORDER_TBL O
+INNER JOIN 
+    PAYMENT P ON O.ORD_CODE = P.ODR_CODE;
+

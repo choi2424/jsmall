@@ -12,7 +12,7 @@ public class AdOrderDTO {
 	private String ord_name; // 수령자명
 	private String ord_tel; // 전화번호
 	private String pay_method; // 결제방법
-	private int ord_price; // 총주문금액
+	private String ord_price; // 총주문금액
 	private Date ord_regdate; // 주문일시
 	
 }

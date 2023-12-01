@@ -308,7 +308,6 @@ desired effect
     });
 
     $("#btnCancel").click(()=>{
-      if(!confirm("취소 하시겠습니까?")) return;
       history.back();
     });
     

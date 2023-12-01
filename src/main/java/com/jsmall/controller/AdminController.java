@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.jsmall.domain.AdminVO;
+import com.jsmall.domain.MemberVO;
+import com.jsmall.dto.AdCountDTO;
 import com.jsmall.dto.AdOrderDTO;
 import com.jsmall.service.AdOrderService;
 import com.jsmall.service.AdminService;
@@ -77,9 +79,20 @@ public class AdminController {
 	@GetMapping("/admin_main")
 	public void admin_main(Model model) {
 		
+		// 총주문건수 ,총주문금액 , 이번달 주문건수 , 이번달 주문금액 ,저번달 주문건수 , 저번달 주문금액
+		AdCountDTO adCount = adminservice.adCount();
+		
+		model.addAttribute("adCount", adCount);
+		
+		// 최근 주문내역
 		List<AdOrderDTO> adOrderDTO = adminservice.order_list();
 		
 		model.addAttribute("adOrderDTO", adOrderDTO);
+		
+		// 최근 회원가입
+		List<MemberVO> adMember = adminservice.adMember();
+		
+		model.addAttribute("adMember", adMember);
 	}
 	
 	// 어드민 로그아웃

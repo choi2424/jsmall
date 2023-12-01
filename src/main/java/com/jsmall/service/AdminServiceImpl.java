@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.jsmall.domain.AdminVO;
+import com.jsmall.domain.MemberVO;
+import com.jsmall.dto.AdCountDTO;
 import com.jsmall.dto.AdOrderDTO;
 import com.jsmall.mapper.AdminMapper;
 
@@ -34,6 +36,18 @@ public class AdminServiceImpl implements AdminService {
 	
 		
 		return adminMapper.order_list();
+	}
+
+	@Override
+	public List<MemberVO> adMember() {
+		// TODO Auto-generated method stub
+		return adminMapper.adMember();
+	}
+
+	@Override
+	public AdCountDTO adCount() {
+		// TODO Auto-generated method stub
+		return adminMapper.adCount();
 	}
 	
 	

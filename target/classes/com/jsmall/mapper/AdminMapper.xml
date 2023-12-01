@@ -28,16 +28,55 @@
 		
 		<![CDATA[
 		select
-			o.ord_code, o.member_id, o.ord_name, o.ord_tel, p.pay_method, o.ord_price, o.ord_regdate
+			ord_code, member_id, ord_name, ord_tel, pay_method, 
+			TO_CHAR(ord_price, '999,999,999') AS ord_price, ord_regdate,rnum
 		from
-			ORDER_TBL o
-			INNER JOIN PAYMENT p ON o.ord_code = p.odr_code
+			(
+			select
+				o.ord_code, o.member_id, o.ord_name, o.ord_tel, p.pay_method, o.ord_price, o.ord_regdate,
+				ROW_NUMBER() OVER (ORDER BY o.ord_code DESC) AS rnum
+			from
+				ORDER_TBL o
+				INNER JOIN PAYMENT p ON o.ord_code = p.odr_code
+			)
 		WHERE 
-			ROWNUM <= 5
-		order by
-			o.ord_code desc
+			rnum <= 5
+		
 		]]>
 		
 	</select>
+	
+	<select id="adMember" resultType="com.jsmall.domain.MemberVO">
+		
+		SELECT
+    		MEMBER_NAME,MEMBER_ID,MEMBER_PHONE,MEMBER_EMAIL,MEMBER_DATESUB
+		FROM
+    		MEMBER_TABLE
+		ORDER BY
+    		MEMBER_DATESUB DESC
+	
+	</select>
+	
+	<select id="adCount" resultType="com.jsmall.dto.AdCountDTO">
+		
+		SELECT
+    
+    		COUNT(O.ORD_CODE) AS total_orders,
+    		TO_CHAR(SUM(P.PAY_TOT_PRICE),'999,999,999') AS total_order_amount,
+
+    
+    		COUNT(CASE WHEN EXTRACT(YEAR FROM O.ORD_REGDATE) = EXTRACT(YEAR FROM SYSDATE) AND EXTRACT(MONTH FROM O.ORD_REGDATE) = EXTRACT(MONTH FROM SYSDATE) THEN O.ORD_CODE END) AS this_month_orders,
+    		TO_CHAR(SUM(CASE WHEN EXTRACT(YEAR FROM O.ORD_REGDATE) = EXTRACT(YEAR FROM SYSDATE) AND EXTRACT(MONTH FROM O.ORD_REGDATE) = EXTRACT(MONTH FROM SYSDATE) THEN P.PAY_TOT_PRICE END),'999,999,999') AS this_month_order_amount,
+
+    
+    		COUNT(CASE WHEN EXTRACT(YEAR FROM O.ORD_REGDATE) = EXTRACT(YEAR FROM ADD_MONTHS(SYSDATE, -1)) AND EXTRACT(MONTH FROM O.ORD_REGDATE) = EXTRACT(MONTH FROM ADD_MONTHS(SYSDATE, -1)) THEN O.ORD_CODE END) AS last_month_orders,
+    		TO_CHAR(SUM(CASE WHEN EXTRACT(YEAR FROM O.ORD_REGDATE) = EXTRACT(YEAR FROM ADD_MONTHS(SYSDATE, -1)) AND EXTRACT(MONTH FROM O.ORD_REGDATE) = EXTRACT(MONTH FROM ADD_MONTHS(SYSDATE, -1)) THEN P.PAY_TOT_PRICE END),'999,999,999') AS last_month_order_amount
+		FROM   
+    		ORDER_TBL O
+		INNER JOIN 
+    		PAYMENT P ON O.ORD_CODE = P.ODR_CODE
+			
+	</select>
+	
 	
 </mapper>

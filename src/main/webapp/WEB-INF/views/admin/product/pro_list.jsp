@@ -278,7 +278,26 @@ desired effect
 
       actionForm.submit();
     });
+    
+    // 상품이미지 또는 상품명클릭시
+    $("a.move").on("click",function(e) {
+      //수정 상품코드
+      let pro_num = $(this).parent().find('[data-pro_num]').data("pro_num");
+
+      // console.log(pro_num);
+
       
+      // 뒤로가기 클릭후 다시 수정버튼 클릭시 코드 중복되는 부분때문에 제거
+      actionForm.find("input[name=pro_num]").remove();
+
+      // <input type="hidden" name="pro_num" id="pro_num" />
+      actionForm.append('<input type="hidden" name="pro_num" id="pro_num" value="' + pro_num + '" />');
+      
+      actionForm.attr("method","get");
+      actionForm.attr("action","/admin/product/pro_edit");
+      actionForm.submit();
+    })
+
     // 목록에서 제목행 체크박스 선택
     let isCheck = true;
     $("#checkAll").on("click",function(){

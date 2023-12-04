@@ -56,5 +56,33 @@
 	<context:component-scan base-package="com.jsmall.controller" />
 	
 	
+	<beans:bean id="userInterceptor" class="com.jsmall.interceptor.UserInterceptor"></beans:bean>
+	
+	<!-- 사용자 -->
+	<interceptors>
+		<interceptor>
+			<mapping path="/member/logout"/>
+			<mapping path="/member/confirmModify"/>
+			<mapping path="/member/modify"/>
+			<mapping path="/member/confirmMypage"/>
+			<mapping path="/member/mypage"/>
+			<mapping path="/member/delMember"/>
+			<mapping path="/user/cart/*"/>
+			<exclude-mapping path="/member/change_password"/>
+			<beans:ref bean="userInterceptor"/>
+		</interceptor>
+	</interceptors>
+	
+	<!-- 관리자 -->
+	<beans:bean id="adminInterceptor" class="com.jsmall.interceptor.AdminInterceptor"></beans:bean>
+	
+	<interceptors>
+		<interceptor>
+			<mapping path="/admin/**"/>
+			<exclude-mapping path="/admin/intro"/>
+			<beans:ref bean="adminInterceptor"/>
+		</interceptor>
+	</interceptors>
+	
 	
 </beans:beans>

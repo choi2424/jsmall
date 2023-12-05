@@ -61,14 +61,15 @@
 	<!-- 사용자 -->
 	<interceptors>
 		<interceptor>
-			<mapping path="/member/logout"/>
-			<mapping path="/member/confirmModify"/>
-			<mapping path="/member/modify"/>
-			<mapping path="/member/confirmMypage"/>
-			<mapping path="/member/mypage"/>
-			<mapping path="/member/delMember"/>
+			<mapping path="/member/join"/>
+			<mapping path="/member/idCheck"/>
+			<mapping path="/member/login"/>
+			<mapping path="/member/find_id"/>
+			<mapping path="/member/find_pw"/>
+			<mapping path="/member/change_password"/>
 			<mapping path="/user/cart/*"/>
-			<exclude-mapping path="/member/change_password"/>
+			<mapping path="/user/order/*"/>
+			<exclude-mapping path="/member/"/>
 			<beans:ref bean="userInterceptor"/>
 		</interceptor>
 	</interceptors>
@@ -79,7 +80,7 @@
 	<interceptors>
 		<interceptor>
 			<mapping path="/admin/**"/>
-			<exclude-mapping path="/admin/intro"/>
+			<exclude-mapping path="/admin/ad_login"/>
 			<beans:ref bean="adminInterceptor"/>
 		</interceptor>
 	</interceptors>

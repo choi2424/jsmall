@@ -40,4 +40,10 @@ public class AdCategoryController {
 		
 		return entity;
 	}
+	
+	// 카테고리 관리 폼
+	@GetMapping("/category_list")
+	public void category_list() {
+		
+	}
 }

@@ -61,8 +61,17 @@
               </span>
           </a>
           <ul class="treeview-menu">
-            <li><a href="#">회원 정보관리</a></li>
-            <li><a href="#">회원 레벨관리</a></li>
+            <li><a href="/admin/member/member_list">회원 정보관리</a></li>
+          </ul>
+        </li>
+        <li class="treeview">
+          <a href="#"><i class="fa fa-link"></i> <span>카테고리 관리</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+              </span>
+          </a>
+          <ul class="treeview-menu">
+            <li><a href="/admin/category/category_list">카테고리 관리</a></li>
           </ul>
         </li>
       </ul>

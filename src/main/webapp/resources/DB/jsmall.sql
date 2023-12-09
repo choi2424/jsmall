@@ -2,8 +2,8 @@ CREATE TABLE MEMBER_TABLE(
         MEMBER_ID             VARCHAR2(15),
         MEMBER_NAME           VARCHAR2(30)            NOT NULL,
         MEMBER_EMAIL          VARCHAR2(50)            NOT NULL,
-        MEMBER_PASSWORD       CHAR(60)               NOT NULL,        -- ºñ¹Ð¹øÈ£ ¾ÏÈ£È­ Ã³¸®.
-        MEMBER_ZIPCODE        CHAR(5)                 NOT NULL, -- ¿ìÆí¹øÈ£
+        MEMBER_PASSWORD       CHAR(60)               NOT NULL,        -- ë¹„ë°€ë²ˆí˜¸ ì•”í˜¸í™” ì²˜ë¦¬.
+        MEMBER_ZIPCODE        CHAR(5)                 NOT NULL, -- ìš°íŽ¸ë²ˆí˜¸
         MEMBER_ADDR           VARCHAR2(100)            NOT NULL,
         MEMBER_DEADDR         VARCHAR2(100)            NOT NULL,
         MEMBER_PHONE          VARCHAR2(15)            NOT NULL,
@@ -13,71 +13,71 @@ CREATE TABLE MEMBER_TABLE(
         MEMBER_UPDATEDATE     DATE DEFAULT SYSDATE    NOT NULL
 );
 
---½ÇÇà ÇÁ¶óÀÓÅ° ¼³Á¤
+--ì‹¤í–‰ í”„ë¼ìž„í‚¤ ì„¤ì •
 ALTER TABLE MEMBER_TABLE
 ADD CONSTRAINT PK_MEMBER_ID PRIMARY KEY (MEMBER_ID);
 
--- ¾ÆÀÌµð Ã¼Å©
+-- ì•„ì´ë”” ì²´í¬
 SELECT MEMBER_ID FROM MEMBER_TABLE  WHERE MEMBER_ID = 'USER01';
 
--- È¸¿ø°¡ÀÔ
+-- íšŒì›ê°€ìž…
 INSERT INTO MEMBER_TABLE (MEMBER_ID, MEMBER_NAME, MEMBER_EMAIL, MEMBER_PASSWORD, MEMBER_ZIPCODE, MEMBER_ADDR, MEMBER_DEADDR, MEMBER_PHONE) 
 VALUES (#{MEMBER_id}, #{MEMBER_name}, #{MEMBER_email}, 
 #{MEMBER_password}, #{MEMBER_zipcode}, #{MEMBER_addr}, #{MEMBER_deaddr}, #{MEMBER_phone});
 
--- ·Î±×ÀÎ
+-- ë¡œê·¸ì¸
 SELECT MEMBER_ID, MEMBER_NAME, MEMBER_EMAIL, MEMBER_PASSWORD, MEMBER_ZIPCODE, MEMBER_ADDR, MEMBER_DEADDR, MEMBER_PHONE, MEMBER_POINT, MEMBER_LASTLOGIN, MEMBER_DATESUB, MEMBER_UPDATEDATE
 FROM MEMBER_TABLE WHERE MEMBER_ID = #{MEMBER_ID}
 
--- È¸¿ø¼öÁ¤Æû
+-- íšŒì›ìˆ˜ì •í¼
 UPDATE MEMBER_TABLE
 SET 
     MEMBER_EMAIL = #{MEMBER_email},MEMBER_ZIPCODE = #{MEMBER_zipcode},MEMBER_ADDR = #{MEMBER_addr},MEMBER_DEADDR = #{MEMBER_deaddr},
     MEMBER_PHONE = #{MEMBER_phone},MEMBER_UPDATEDATE = sysdate
 WHERE MEMBER_ID = #{MEMBER_id};
 
--- ·Î±×ÀÎ À¯Áö ½Ã°£
+-- ë¡œê·¸ì¸ ìœ ì§€ ì‹œê°„
 UPDATE MEMBER_TABLE
 SET	MEMBER_LASTLOGIN = sysdate
 WHERE MEMBER_ID = #{MEMBER_id};
--- È¸¿øÅ»Åð
+-- íšŒì›íƒˆí‡´
 DELETE MEMBER_TABLE
 WHERE MEMBER_ID = #{MEMBER_id};
 
 
---¾ÆÀÌµð¹×ºñ¹Ð¹øÈ£Ã£±â
---1)¾ÆÀÌµð Ã£±â
+--ì•„ì´ë””ë°ë¹„ë°€ë²ˆí˜¸ì°¾ê¸°
+--1)ì•„ì´ë”” ì°¾ê¸°
 SELECT MEMBER_ID FROM MEMBER_TABLE WHERE MEMBER_NAME = #{MEMBER_name} AND MEMBER_EMAIL = #{MEMBER_email}
---2)ºñ¹Ð¹øÈ£ Ã£±â(¸ÞÀÏ Àü¼Û)
+--2)ë¹„ë°€ë²ˆí˜¸ ì°¾ê¸°(ë©”ì¼ ì „ì†¡)
 SELECT MEMBER_EMAIL FROM MEMBER_TABLE WHERE MEMBER_ID = #{MEMBER_id} AND MEMBER_EMAIL = #{MEMBER_email}
 
--- °ü¸®ÀÚ Å×ÀÌºí
+-- ê´€ë¦¬ìž í…Œì´ë¸”
 CREATE TABLE ADMIN_TABLE (
     ADMIN_ID    VARCHAR2(15)    PRIMARY KEY,
     ADMIN_PW    CHAR(60)    NOT NULL,
-    ADMIN_VISIT_DATE    DATE   -- °ü¸®ÀÚ ¹æ¹®½Ã°£
+    ADMIN_VISIT_DATE    DATE   -- ê´€ë¦¬ìž ë°©ë¬¸ì‹œê°„
 );
 
--- °ü¸®ÀÚ ºñ¹Ð¹øÈ£ 1234
+-- ê´€ë¦¬ìž ë¹„ë°€ë²ˆí˜¸ 1234
 INSERT INTO ADMIN_TABLE VALUES('admin', '$2a$10$dQFCMr0udCI865eG6SoIcOaNr3Y/dgBX.R4qf6rX5KA3jciSnnNjG',sysdate);
--- °ü¸®ÀÚ ·Î±×ÀÎ
+-- ê´€ë¦¬ìž ë¡œê·¸ì¸
 SELECT ADMIN_ID,ADMIN_PW, ADMIN_VISIT_DATE FROM ADMIN_TABLE WHERE ADMIN_ID = #{admin_id};
--- ¸¶Áö¸· ·Î±×ÀÎ
+-- ë§ˆì§€ë§‰ ë¡œê·¸ì¸
 UPDATE
 			ADMIN_TABLE
 		SET
 			ADMIN_VISIT_DATE = sysdate
 		WHERE
 			ADMIN_ID = 'admin';]
--- Ä«Å×°í¸® Å×ÀÌºí
+-- ì¹´í…Œê³ ë¦¬ í…Œì´ë¸”
 CREATE TABLE CATEGORY_TBL(
-        CG_CODE            NUMBER    PRIMARY KEY,    -- Ä«Å×°í¸® ÄÚµå
-        CG_PARENT_CODE     NUMBER    NULL,           -- »óÀ§Ä«Å×°í¸® ÄÚµå
+        CG_CODE            NUMBER    PRIMARY KEY,    -- ì¹´í…Œê³ ë¦¬ ì½”ë“œ
+        CG_PARENT_CODE     NUMBER    NULL,           -- ìƒìœ„ì¹´í…Œê³ ë¦¬ ì½”ë“œ
         CG_NAME            VARCHAR2(50)    NOT NULL,
         FOREIGN KEY(CG_PARENT_CODE) REFERENCES CATEGORY_TBL(CG_CODE)
 );
 
--- 1Â÷ Ä«Å×°í¸® : TOP(1) PANTS(2) SHIRTS(3) OUTER(4) SHOES(5) BAG(6) ACC(7)
+-- 1ì°¨ ì¹´í…Œê³ ë¦¬ : TOP(1) PANTS(2) SHIRTS(3) OUTER(4) SHOES(5) BAG(6) ACC(7)
 INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
     VALUES (1,NULL,'TOP');
 INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
@@ -93,120 +93,120 @@ INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME)
 INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
     VALUES (7,NULL,'ACC');  
 
--- 1Â÷Ä«Å×°í¸® TOP : 1
--- 2Â÷ Ä«Å×°í¸® : ±äÆÈÆ¼ ´ÏÆ® ¸ÇÅõ¸Ç/ÈÄµåÆ¼ ÇÁ¸°ÆÃÆ¼ ³ª½Ã ¹ÝÆÈÆ¼/7ºÎÆ¼
+-- 1ì°¨ì¹´í…Œê³ ë¦¬ TOP : 1
+-- 2ì°¨ ì¹´í…Œê³ ë¦¬ : ê¸´íŒ”í‹° ë‹ˆíŠ¸ ë§¨íˆ¬ë§¨/í›„ë“œí‹° í”„ë¦°íŒ…í‹° ë‚˜ì‹œ ë°˜íŒ”í‹°/7ë¶€í‹°
 INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
-    VALUES (8,1,'±äÆÈÆ¼');
+    VALUES (8,1,'ê¸´íŒ”í‹°');
 INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
-VALUES (9,1,'´ÏÆ®');
+VALUES (9,1,'ë‹ˆíŠ¸');
 INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
-VALUES (10,1,'¸ÇÅõ¸Ç&#38;ÈÄµåÆ¼');
+VALUES (10,1,'ë§¨íˆ¬ë§¨&#38;í›„ë“œí‹°');
 INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
-VALUES (11,1,'ÇÁ¸°ÆÃÆ¼');
+VALUES (11,1,'í”„ë¦°íŒ…í‹°');
 INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
-VALUES (12,1,'³ª½Ã');
+VALUES (12,1,'ë‚˜ì‹œ');
 INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
-VALUES (13,1,'¹ÝÆÈÆ¼&#38;7ºÎÆ¼');
+VALUES (13,1,'ë°˜íŒ”í‹°&#38;7ë¶€í‹°');
 
--- 1Â÷Ä«Å×°í¸® PANTS : 2
--- 2Â÷Ä«Å×°í¸® : ¹êµùÆÒÃ÷ Ã»¹ÙÁö ½½·¢½º ¸é¹ÙÁö ¹Ý¹ÙÁö
+-- 1ì°¨ì¹´í…Œê³ ë¦¬ PANTS : 2
+-- 2ì°¨ì¹´í…Œê³ ë¦¬ : ë°´ë”©íŒ¬ì¸  ì²­ë°”ì§€ ìŠ¬ëž™ìŠ¤ ë©´ë°”ì§€ ë°˜ë°”ì§€
 INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
-    VALUES (14,2,'¹êµùÆÒÃ÷');
+    VALUES (14,2,'ë°´ë”©íŒ¬ì¸ ');
 INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
-    VALUES (15,2,'Ã»¹ÙÁö');
+    VALUES (15,2,'ì²­ë°”ì§€');
 INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
-    VALUES (16,2,'½½·¢½º');
+    VALUES (16,2,'ìŠ¬ëž™ìŠ¤');
 INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
-    VALUES (17,2,'¸é¹ÙÁö');
+    VALUES (17,2,'ë©´ë°”ì§€');
 INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
-    VALUES (18,2,'¹Ý¹ÙÁö');
+    VALUES (18,2,'ë°˜ë°”ì§€');
     
--- 1Â÷Ä«Å×°í¸® SHIRTS : 3
--- 2Â÷Ä«Å×°í¸® : Çî¸®³Ø/Â÷ÀÌ³ª º£ÀÌÁ÷ Ã¼Å©/ÆÐÅÏ Ã»³²¹æ ½ºÆ®¶óÀÌÇÁ 
-
-INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
-    VALUES (19,3,'Çî¸®³Ø&#38;Â÷ÀÌ³ª');
-INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
-    VALUES (20,3,'º£ÀÌÁ÷');
-INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
-    VALUES (21,3,'Ã¼Å©&#38;ÆÐÅÏ');
-INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
-    VALUES (22,3,'Ã»³²¹æ');
-INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
-    VALUES (23,3,'½ºÆ®¶óÀÌÇÁ'); 
-    
-    
--- 1Â÷Ä«Å×°í¸® OUTER : 4
--- 2Â÷Ä«Å×°í¸® : ÆÐµù ÄÚÆ® ¼öÆ®/ºí·¹ÀÌÁ® ÀÚÄÏ ºí·çÁ¾/MA-1 °¡µð°Ç/Á¶³¢ ÈÄµå/Áý¾÷
+-- 1ì°¨ì¹´í…Œê³ ë¦¬ SHIRTS : 3
+-- 2ì°¨ì¹´í…Œê³ ë¦¬ : í—¨ë¦¬ë„¥/ì°¨ì´ë‚˜ ë² ì´ì§ ì²´í¬/íŒ¨í„´ ì²­ë‚¨ë°© ìŠ¤íŠ¸ë¼ì´í”„ 
 
 INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
-    VALUES (24,4,'ÆÐµù');
+    VALUES (19,3,'í—¨ë¦¬ë„¥&#38;ì°¨ì´ë‚˜');
 INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
-    VALUES (25,4,'ÄÚÆ®');
+    VALUES (20,3,'ë² ì´ì§');
 INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
-    VALUES (26,4,'¼öÆ®&#38;ºí·¹ÀÌÁ®');
+    VALUES (21,3,'ì²´í¬&#38;íŒ¨í„´');
 INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
-    VALUES (27,4,'ÀÚÄÏ');
+    VALUES (22,3,'ì²­ë‚¨ë°©');
 INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
-    VALUES (28,4,'ºí·çÁ¾&#38;MA-1');     
-INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
-    VALUES (29,4,'°¡µð°Ç&#38;Á¶³¢');     
-INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
-    VALUES (30,4,'ÈÄµå&#38;Áý¾÷');  
+    VALUES (23,3,'ìŠ¤íŠ¸ë¼ì´í”„'); 
     
--- 1Â÷Ä«Å×°í¸® SHOES : 5
--- 2Â÷Ä«Å×°í¸® : ½º´ÏÄ¿Áî ·ÎÆÛ/±¸µÎ Å°³ôÀÌ½Å¹ß/±òÃ¢ ½½¸®ÆÛ/ÂÉ¸®/»÷µé
+    
+-- 1ì°¨ì¹´í…Œê³ ë¦¬ OUTER : 4
+-- 2ì°¨ì¹´í…Œê³ ë¦¬ : íŒ¨ë”© ì½”íŠ¸ ìˆ˜íŠ¸/ë¸”ë ˆì´ì ¸ ìžì¼“ ë¸”ë£¨ì¢…/MA-1 ê°€ë””ê±´/ì¡°ë¼ í›„ë“œ/ì§‘ì—…
+
 INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
-    VALUES (31,5,'½º´ÏÄ¿Áî');
+    VALUES (24,4,'íŒ¨ë”©');
 INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
-    VALUES (32,5,'·ÎÆÛ&#38;±¸µÎ');
+    VALUES (25,4,'ì½”íŠ¸');
 INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
-    VALUES (33,5,'Å°³ôÀÌ½Å¹ß&#38;±òÃ¢');
+    VALUES (26,4,'ìˆ˜íŠ¸&#38;ë¸”ë ˆì´ì ¸');
 INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
-    VALUES (34,5,'½½¸®ÆÛ&#38;ÂÉ¸®/»÷µé');
+    VALUES (27,4,'ìžì¼“');
+INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
+    VALUES (28,4,'ë¸”ë£¨ì¢…&#38;MA-1');     
+INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
+    VALUES (29,4,'ê°€ë””ê±´&#38;ì¡°ë¼');     
+INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
+    VALUES (30,4,'í›„ë“œ&#38;ì§‘ì—…');  
+    
+-- 1ì°¨ì¹´í…Œê³ ë¦¬ SHOES : 5
+-- 2ì°¨ì¹´í…Œê³ ë¦¬ : ìŠ¤ë‹ˆì»¤ì¦ˆ ë¡œí¼/êµ¬ë‘ í‚¤ë†’ì´ì‹ ë°œ/ê¹”ì°½ ìŠ¬ë¦¬í¼/ìª¼ë¦¬/ìƒŒë“¤
+INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
+    VALUES (31,5,'ìŠ¤ë‹ˆì»¤ì¦ˆ');
+INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
+    VALUES (32,5,'ë¡œí¼&#38;êµ¬ë‘');
+INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
+    VALUES (33,5,'í‚¤ë†’ì´ì‹ ë°œ&#38;ê¹”ì°½');
+INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
+    VALUES (34,5,'ìŠ¬ë¦¬í¼&#38;ìª¼ë¦¬/ìƒŒë“¤');
    
--- 1Â÷Ä«Å×°í¸® BAG : 6
--- 2Â÷Ä«Å×°í¸® : ¹éÆÑ ÅäÆ®/¼ñ´õ¹é Å©·Î½º¹é Å¬·¯Ä¡
+-- 1ì°¨ì¹´í…Œê³ ë¦¬ BAG : 6
+-- 2ì°¨ì¹´í…Œê³ ë¦¬ : ë°±íŒ© í† íŠ¸/ìˆ„ë”ë°± í¬ë¡œìŠ¤ë°± í´ëŸ¬ì¹˜
 INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
-    VALUES (35,6,'¹éÆÑ'); 
+    VALUES (35,6,'ë°±íŒ©'); 
 INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
-    VALUES (36,6,'ÅäÆ®/¼ñ´õ¹é');
+    VALUES (36,6,'í† íŠ¸/ìˆ„ë”ë°±');
 INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
-    VALUES (37,6,'Å©·Î½º¹é');
+    VALUES (37,6,'í¬ë¡œìŠ¤ë°±');
 INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
-    VALUES (38,6,'Å¬·¯Ä¡');    
--- 1Â÷Ä«Å×°í¸® ACC : 7
--- 2Â÷Ä«Å×°í¸® : ¾ç¸»/³ØÅ¸ÀÌ ¸ðÀÚ ¸ÓÇÃ·¯/Àå°© ¾ÆÀÌ¿þ¾î º§Æ®/½Ã°è ±âÅ¸
+    VALUES (38,6,'í´ëŸ¬ì¹˜');    
+-- 1ì°¨ì¹´í…Œê³ ë¦¬ ACC : 7
+-- 2ì°¨ì¹´í…Œê³ ë¦¬ : ì–‘ë§/ë„¥íƒ€ì´ ëª¨ìž ë¨¸í”ŒëŸ¬/ìž¥ê°‘ ì•„ì´ì›¨ì–´ ë²¨íŠ¸/ì‹œê³„ ê¸°íƒ€
 INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
-    VALUES (39,7,'¾ç¸»/³ØÅ¸ÀÌ');
+    VALUES (39,7,'ì–‘ë§/ë„¥íƒ€ì´');
 INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
-    VALUES (40,7,'¸ðÀÚ');
+    VALUES (40,7,'ëª¨ìž');
 INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
-    VALUES (41,7,'¸ÓÇÃ·¯&#38;Àå°©');
+    VALUES (41,7,'ë¨¸í”ŒëŸ¬&#38;ìž¥ê°‘');
 INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
-    VALUES (42,7,'¾ÆÀÌ¿þ¾î');
+    VALUES (42,7,'ì•„ì´ì›¨ì–´');
 INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
-    VALUES (43,7,'º§Æ®&#38;½Ã°è');
+    VALUES (43,7,'ë²¨íŠ¸&#38;ì‹œê³„');
 INSERT INTO category_tbl (CG_CODE,CG_PARENT_CODE,CG_NAME) 
-    VALUES (44,7,'±âÅ¸');
+    VALUES (44,7,'ê¸°íƒ€');
 
--- ÀüÃ¼ Ä«Å×°í¸® Ãâ·Â
+-- ì „ì²´ ì¹´í…Œê³ ë¦¬ ì¶œë ¥
 SELECT * FROM CATEGORY_TBL;
 
--- 1Â÷ Ä«Å×°í¸® ÀüºÎ Ãâ·Â
+-- 1ì°¨ ì¹´í…Œê³ ë¦¬ ì „ë¶€ ì¶œë ¥
 SELECT CG_CODE, CG_PARENT_CODE, CG_NAME FROM CATEGORY_TBL
 WHERE CG_PARENT_CODE IS NULL;
 
--- 1Â÷ Ä«Å×°í¸® TOPÀÇ ÇÏÀ§ÀÎ 2Â÷ Ä«Å×°í¸® Ãâ·Â
+-- 1ì°¨ ì¹´í…Œê³ ë¦¬ TOPì˜ í•˜ìœ„ì¸ 2ì°¨ ì¹´í…Œê³ ë¦¬ ì¶œë ¥
 SELECT * FROM CATEGORY_TBL
 WHERE CG_PARENT_CODE = 1;
 
--- 2Â÷ Ä«Å×°í¸® ÀüºÎ Ãâ·Â
+-- 2ì°¨ ì¹´í…Œê³ ë¦¬ ì „ë¶€ ì¶œë ¥
 SELECT * FROM CATEGORY_TBL
 WHERE CG_PARENT_CODE IS NOT NULL;
 drop table PRODUCT_TBL;
 drop SEQUENCE SEQ_PRODUCT_TBL;
--- »óÇ° Á¤º¸ Å×ÀÌºí
+-- ìƒí’ˆ ì •ë³´ í…Œì´ë¸”
 CREATE TABLE PRODUCT_TBL(
         PRO_NUM             NUMBER  CONSTRAINT  PK_PRO_NUM         PRIMARY KEY,
         CG_CODE             NUMBER           NULL,
@@ -214,9 +214,9 @@ CREATE TABLE PRODUCT_TBL(
         PRO_PRICE           NUMBER                  NOT NULL,
         PRO_DISCOUNT        NUMBER                  NOT NULL,
         PRO_PUBLISHER       VARCHAR2(50)            NOT NULL,
-        PRO_CONTENT         VARCHAR2(4000)  /* CLOB */                  NOT NULL,       -- ³»¿ëÀÌ 4000BYTE ÃÊ°ú¿©ºÎÆÇ´Ü?
+        PRO_CONTENT         VARCHAR2(4000)  /* CLOB */                  NOT NULL,       -- ë‚´ìš©ì´ 4000BYTE ì´ˆê³¼ì—¬ë¶€íŒë‹¨?
         PRO_UP_FOLDER       VARCHAR2(50)             NOT NULL,
-        PRO_IMG             VARCHAR2(100)             NOT NULL,  -- ³¯Â¥Æú´õ°æ·Î°¡ Æ÷ÇÔÇÏ¿© ÆÄÀÏÀÌ¸§ÀúÀå
+        PRO_IMG             VARCHAR2(100)             NOT NULL,  -- ë‚ ì§œí´ë”ê²½ë¡œê°€ í¬í•¨í•˜ì—¬ íŒŒì¼ì´ë¦„ì €ìž¥
         PRO_AMOUNT          NUMBER                  NOT NULL,
         PRO_BUY             CHAR(1)             NOT NULL,
         PRO_DATE            DATE DEFAULT SYSDATE    NOT NULL,
@@ -224,10 +224,10 @@ CREATE TABLE PRODUCT_TBL(
         FOREIGN KEY(CG_CODE) REFERENCES CATEGORY_TBL(CG_CODE)
 );    
 
--- »óÇ°Å×ÀÌºíÀÇ »óÇ°ÄÚµå ÄÃ·³¿¡ »ç¿ë¸ñÀû
+-- ìƒí’ˆí…Œì´ë¸”ì˜ ìƒí’ˆì½”ë“œ ì»¬ëŸ¼ì— ì‚¬ìš©ëª©ì 
 CREATE SEQUENCE SEQ_PRODUCT_TBL;
 
--- »óÇ°Å×ÀÌºí µ¥ÀÌÅÍ Áý¾î³Ö±â
+-- ìƒí’ˆí…Œì´ë¸” ë°ì´í„° ì§‘ì–´ë„£ê¸°
 INSERT INTO 
     PRODUCT_TBL 
         PRO_NUM, CG_CODE, PRO_NAME, PRO_PRICE, PRO_DISCOUNT, 
@@ -238,7 +238,7 @@ INSERT INTO
 
 SELECT * FROM PRODUCT_TBL;        
 
-<!-- °øÅëµÈ SQL±¸¹®ÀÛ¾÷ : °Ë»öÁ¶°Ç -->
+<!-- ê³µí†µëœ SQLêµ¬ë¬¸ìž‘ì—… : ê²€ìƒ‰ì¡°ê±´ -->
    <sql id="criteria">
    		<trim prefix="(" suffix=") AND" prefixOverrides="OR">
    			<foreach collection="typeArr" item="type">
@@ -259,7 +259,7 @@ SELECT * FROM PRODUCT_TBL;
    		</trim>	
    </sql>
    
-   <!-- °Ô½ÃÆÇ  -->
+   <!-- ê²Œì‹œíŒ  -->
    <select id="getListWithPaging" resultType="com.demo.domain.BoardVO" parameterType="com.demo.domain.Criteria">
    		<![CDATA[
    		SELECT PRO_NUM, CG_CODE, PRO_NAME, PRO_PRICE, PRO_DISCOUNT, PRO_PUBLISHER, PRO_CONTENT, PRO_UP_FOLDER, PRO_IMG, PRO_AMOUNT, PRO_BUY, PRO_DATE, PRO_UPDATEDATE
@@ -280,36 +280,36 @@ SELECT * FROM PRODUCT_TBL;
 		]]> 
    </select>
    
-   -- ÀüÃ¼ µ¥ÀÌÅÍ¼ö -->
+   -- ì „ì²´ ë°ì´í„°ìˆ˜ -->
 SELECT COUNT(*) 
 FROM PRODUCT_TBL 
 WHERE <include refid="criteria"></include> PRO_NUM > 0
 
    
--- Ã¼Å©»óÇ° ¼öÁ¤ÀÛ¾÷
+-- ì²´í¬ìƒí’ˆ ìˆ˜ì •ìž‘ì—…
 UPDATE PRODUCT_TBL SET PRO_PRICE = #{pro_price}, PRO_BUY = #{pro_buy} WHERE PRO_NUM = #{pro_num}; 
 
--- »óÇ°¼öÁ¤ Æû ÆäÀÌÁö
+-- ìƒí’ˆìˆ˜ì • í¼ íŽ˜ì´ì§€
 SELECT 
     PRO_NUM, CG_CODE, PRO_NAME, PRO_PRICE, PRO_DISCOUNT, PRO_PUBLISHER, PRO_CONTENT, 
     PRO_UP_FOLDER, PRO_IMG, PRO_AMOUNT, PRO_BUY, PRO_DATE, PRO_UPDATEDATE
 FROM PRODUCT_TBL WHERE PRO_NUM = #{pro_num};
 
---2Â÷Ä«Å×°í¸® 9ÀÇ ºÎ¸ð Ä«Å×°í¸® Á¤º¸
+--2ì°¨ì¹´í…Œê³ ë¦¬ 9ì˜ ë¶€ëª¨ ì¹´í…Œê³ ë¦¬ ì •ë³´
 select CG_CODE, CG_PARENT_CODE, CG_NAME from CATEGORY_TBL where CG_CODE = #{CG_CODE};
 
---1Â÷Ä«Å×°í¸®ÀÇ ÀÚ½Ä Ä«Å×°í¸® Á¤º¸
+--1ì°¨ì¹´í…Œê³ ë¦¬ì˜ ìžì‹ ì¹´í…Œê³ ë¦¬ ì •ë³´
 select CG_CODE, CG_PARENT_CODE, CG_NAME from CATEGORY_TBL where CG_PARENT_CODE = #{CG_PARENT_CODE};
--- »óÇ° ¼öÁ¤
+-- ìƒí’ˆ ìˆ˜ì •
 UPDATE PRODUCT_TBL 
 SET CG_CODE = , PRO_NAME = , PRO_PRICE = , PRO_DISCOUNT = , PRO_PUBLISHER = , 
 PRO_CONTENT = , PRO_UP_FOLDER = , PRO_IMG = , PRO_AMOUNT = , PRO_BUY = , PRO_UPDATEDATE = SYSDATE
 WHERE PRO_NUM = ;
 
--- »óÇ° »èÁ¦
+-- ìƒí’ˆ ì‚­ì œ
 DELETE FROM PRODUCT_TBL WHERE PRO_NUM = #{pro_num};
 
--- Àå¹Ù±¸´Ï
+-- ìž¥ë°”êµ¬ë‹ˆ
 CREATE TABLE CART_TBL(
         CART_CODE        NUMBER,
         PRO_NUM         NUMBER          NOT NULL,
@@ -322,58 +322,58 @@ CREATE TABLE CART_TBL(
 
 create sequence seq_cart_code;
 
--- Àå¹Ù±¸´Ï¿¡ ·Î±×ÀÎ »ç¿ëÀÚ°¡ »óÇ°À» Ãß°¡½Ã, Á¸Àç ÇÒ°æ¿ì´Â ¼ö·®º¯°æ, Á¸Àç ÇÏÁö¾Ê´Â °æ¿ì Àå¹Ù±¸´Ï Ãß°¡(´ã±â)
+-- ìž¥ë°”êµ¬ë‹ˆì— ë¡œê·¸ì¸ ì‚¬ìš©ìžê°€ ìƒí’ˆì„ ì¶”ê°€ì‹œ, ì¡´ìž¬ í• ê²½ìš°ëŠ” ìˆ˜ëŸ‰ë³€ê²½, ì¡´ìž¬ í•˜ì§€ì•ŠëŠ” ê²½ìš° ìž¥ë°”êµ¬ë‹ˆ ì¶”ê°€(ë‹´ê¸°)
 merge into cart_tbl
 using dual
-on (MEMBER_ID = 'id°ª' and PRO_NUM = '»óÇ°ÄÚµå')
+on (MEMBER_ID = 'idê°’' and PRO_NUM = 'ìƒí’ˆì½”ë“œ')
 when matched then
     update
-        set CART_AMOUNT = CART_AMOUNT + ¼ö·®
+        set CART_AMOUNT = CART_AMOUNT + ìˆ˜ëŸ‰
 when not matched then
     insert(cart_code, pro_num, MEMBER_id, cart_amount)
     values(seq_cart_code.nextval,#{pro_num},#{MEMBER_id},#{cart_amount})
 
--- Àå¹Ù±¸´Ï ¸ñ·Ï
+-- ìž¥ë°”êµ¬ë‹ˆ ëª©ë¡
 SELECT C.CART_CODE, C.PRO_NUM, C.CART_AMOUNT ,P.PRO_NAME, P.PRO_PRICE, P.PRO_IMG, P.PRO_DISCOUNT, P.PRO_UP_FOLDER
 FROM PRODUCT_TBL P INNER JOIN CART_TBL C ON P.PRO_NUM = C.PRO_NUM
 WHERE C.MEMBER_ID = 'user01';
 
--- Àå¹Ù±¸´Ï ¼ö·®º¯°æ
+-- ìž¥ë°”êµ¬ë‹ˆ ìˆ˜ëŸ‰ë³€ê²½
 UPDATE CART_TBL
 SET CART_AMOUNT = #{cart_amount}
 WHERE CART_CODE = #{cart_code}
 
--- Àå¹Ù±¸´Ï °³º°»èÁ¦
+-- ìž¥ë°”êµ¬ë‹ˆ ê°œë³„ì‚­ì œ
 DELETE FROM CART_TBL
 WHERE CART_CODE = #{cart_code}
 
 
 drop table PAYMENT;
---5.ÁÖ¹®³»¿ë Å×ÀÌºí. ±¸¸ÅÀÚÀÇ Á¤º¸
+--5.ì£¼ë¬¸ë‚´ìš© í…Œì´ë¸”. êµ¬ë§¤ìžì˜ ì •ë³´
 CREATE TABLE ORDER_TBL(
-        ORD_CODE            NUMBER                  ,--PRIMARY KEY, -- ÁÖ¹® ÄÚµå
-        MEMBER_ID             VARCHAR2(15)            NOT NULL, -- ±¸¸ÅÀÚ ID
-        ORD_NAME            VARCHAR2(30)            NOT NULL, -- ¼ö·ÉÀÚ ¼º¸í
-        ORD_ZIPCODE         CHAR(5)                 NOT NULL, -- ¿ìÆíÁÖ¼Ò
-        ORD_ADDR_BASIC      VARCHAR2(50)            NOT NULL, -- ÁÖ¼Ò
-        ORD_ADDR_DETAIL     VARCHAR2(50)            NOT NULL, -- »ó¼¼ÁÖ¼Ò
-        ORD_TEL             VARCHAR2(20)            NOT NULL, -- ÀüÈ­¹øÈ£
-        ORD_PRICE           NUMBER                  NOT NULL, -- ÃÑÁÖ¹®±Ý¾×. ¼±ÅÃ
-        ORD_REGDATE         DATE DEFAULT SYSDATE    NOT NULL, -- ÁÖ¹®³¯ÀÚ
-        ORD_STATUS          VARCHAR2(20)            NOT NULL, -- ÁÖ¹® »óÅÂ
-        PAYMENT_STATUS      VARCHAR2(20)            NOT NULL -- °áÁ¦ »óÅÂ
+        ORD_CODE            NUMBER                  ,--PRIMARY KEY, -- ì£¼ë¬¸ ì½”ë“œ
+        MEMBER_ID             VARCHAR2(15)            NOT NULL, -- êµ¬ë§¤ìž ID
+        ORD_NAME            VARCHAR2(30)            NOT NULL, -- ìˆ˜ë ¹ìž ì„±ëª…
+        ORD_ZIPCODE         CHAR(5)                 NOT NULL, -- ìš°íŽ¸ì£¼ì†Œ
+        ORD_ADDR_BASIC      VARCHAR2(50)            NOT NULL, -- ì£¼ì†Œ
+        ORD_ADDR_DETAIL     VARCHAR2(50)            NOT NULL, -- ìƒì„¸ì£¼ì†Œ
+        ORD_TEL             VARCHAR2(20)            NOT NULL, -- ì „í™”ë²ˆí˜¸
+        ORD_PRICE           NUMBER                  NOT NULL, -- ì´ì£¼ë¬¸ê¸ˆì•¡. ì„ íƒ
+        ORD_REGDATE         DATE DEFAULT SYSDATE    NOT NULL, -- ì£¼ë¬¸ë‚ ìž
+        ORD_STATUS          VARCHAR2(20)            NOT NULL, -- ì£¼ë¬¸ ìƒíƒœ
+        PAYMENT_STATUS      VARCHAR2(20)            NOT NULL -- ê²°ì œ ìƒíƒœ
         --FOREIGN KEY(MBSP_ID)    REFERENCES MBSP_TBL(MBSP_ID)
 );
 
 ALTER TABLE ORDER_TBL
 ADD CONSTRAINT PK_ORDER_TBL PRIMARY KEY(ORD_CODE);
 
---6.ÁÖ¹®»ó¼¼ Å×ÀÌºí  (±¸¸ÅÇÑ ¹°Ç°ÀÇ Á¤º¸)
+--6.ì£¼ë¬¸ìƒì„¸ í…Œì´ë¸”  (êµ¬ë§¤í•œ ë¬¼í’ˆì˜ ì •ë³´)
 CREATE TABLE ORDETAIL_TBL(
         ORD_CODE        NUMBER      NOT NULL REFERENCES ORDER_TBL(ORD_CODE),
         PRO_NUM         NUMBER      NOT NULL REFERENCES PRODUCT_TBL(PRO_NUM),
         DT_AMOUNT       NUMBER      NOT NULL,
-        DT_PRICE        NUMBER      NOT NULL,  -- ¿ªÁ¤±ÔÈ­
+        DT_PRICE        NUMBER      NOT NULL,  -- ì—­ì •ê·œí™”
         PRIMARY KEY (ORD_CODE ,PRO_NUM) 
 );
 
@@ -381,23 +381,23 @@ CREATE TABLE ORDETAIL_TBL(
 
 drop table PAYMENT;
 
--- ÁÖ¹®¹øÈ£ : ½ÃÄö½º»ý¼º
+-- ì£¼ë¬¸ë²ˆí˜¸ : ì‹œí€€ìŠ¤ìƒì„±
 CREATE SEQUENCE SEQ_ORD_CODE;
 
 drop SEQUENCE SEQ_ORD_CODE;
--- °áÁ¦Å×ÀÌºí 
+-- ê²°ì œí…Œì´ë¸” 
 CREATE TABLE PAYMENT (
-        PAY_CODE            NUMBER          NOT NULL, -- ÀÏ·Ã¹øÈ£
-        ODR_CODE            NUMBER          NOT NULL, -- ÁÖ¹®¹øÈ£
-        MEMBER_ID             VARCHAR2(50)    NOT NULL, -- È¸¿øID
-        PAY_METHOD          VARCHAR2(50)    NOT NULL, -- °áÁ¦¹æ½Ä
-        PAY_DATE            DATE            NULL,     -- °áÁ¦ÀÏ
-        PAY_TOT_PRICE       NUMBER          NOT NULL, -- °áÁ¦±Ý¾×
-        PAY_NOBANK_PRICE    NUMBER          NULL, -- ¹«ÅëÀåÀÔ±Ý±Ý¾×
-        PAY_NOBANK_USER     VARCHAR2(50)    NULL,     -- ¹«ÅëÀåÀÔ±ÝÁö¸í
-        PAY_NOBANK          VARCHAR2(50)    NULL,     -- ÀÔ±ÝÀºÇà
-        PAY_BANK_ACCOUNT    VARCHAR2(20)    NULL,     -- °èÁÂ¹øÈ£         
-        PAY_MEMO            VARCHAR2(100)   NULL      -- ¸Þ¸ð        
+        PAY_CODE            NUMBER          NOT NULL, -- ì¼ë ¨ë²ˆí˜¸
+        ODR_CODE            NUMBER          NOT NULL, -- ì£¼ë¬¸ë²ˆí˜¸
+        MEMBER_ID             VARCHAR2(50)    NOT NULL, -- íšŒì›ID
+        PAY_METHOD          VARCHAR2(50)    NOT NULL, -- ê²°ì œë°©ì‹
+        PAY_DATE            DATE            NULL,     -- ê²°ì œì¼
+        PAY_TOT_PRICE       NUMBER          NOT NULL, -- ê²°ì œê¸ˆì•¡
+        PAY_NOBANK_PRICE    NUMBER          NULL, -- ë¬´í†µìž¥ìž…ê¸ˆê¸ˆì•¡
+        PAY_NOBANK_USER     VARCHAR2(50)    NULL,     -- ë¬´í†µìž¥ìž…ê¸ˆì§€ëª…
+        PAY_NOBANK          VARCHAR2(50)    NULL,     -- ìž…ê¸ˆì€í–‰
+        PAY_BANK_ACCOUNT    VARCHAR2(20)    NULL,     -- ê³„ì¢Œë²ˆí˜¸         
+        PAY_MEMO            VARCHAR2(100)   NULL      -- ë©”ëª¨        
 );
 
 drop sEQUENCE SEQ_PAYMENT_CODE;
@@ -406,7 +406,7 @@ commit;
 
 CREATE SEQUENCE SEQ_PAYMENT_CODE;
 
--- ÁÖ¹® Å×ÀÌºí
+-- ì£¼ë¬¸ í…Œì´ë¸”
 INSERT INTO 
     ORDER_TBL(
     ord_code, mbsp_id, ord_name, ord_zipcode, ord_addr_basic, ord_addr_detail, ord_tel, ord_price, ord_regdate, 
@@ -416,22 +416,22 @@ VALUES
 	(#{ord_code}, #{mbsp_id}, #{ord_name}, #{ord_zipcode}, #{ord_addr_basic}, #{ord_addr_detail}, 
     #{ord_tel}, #{ord_regdate}, sysdate, #{ord_status}, #{payment_status})
 			
--- ÁÖ¹®»ó¼¼ Å×ÀÌºí ÂüÁ¶ (Àå¹Ù±¸´Ï Å×ÀÌºí ÂüÁ¶)
+-- ì£¼ë¬¸ìƒì„¸ í…Œì´ë¸” ì°¸ì¡° (ìž¥ë°”êµ¬ë‹ˆ í…Œì´ë¸” ì°¸ì¡°)
 INSERT ORDETAIL_TBL (ord_code, pro_num, dt_amount, dt_price)
 SELECT #{odr_code},c.PRO_NUM, c.CART_AMOUNT  , p.pro_price
 FROM CART_TBL c inner join PRODUCT_TBL p on c.pro_num = p.pro_num
 WHERE MBSP_ID = #{mbsp_id}
 
--- Àå¹Ù±¸´Ï Å×ÀÌºí »èÁ¦
+-- ìž¥ë°”êµ¬ë‹ˆ í…Œì´ë¸” ì‚­ì œ
 DELETE FROM CART_TBL WHERE MBSP_ID = #{mbsp_id}
 
--- °áÁ¦ Å×ÀÌºí ÀúÀå
+-- ê²°ì œ í…Œì´ë¸” ì €ìž¥
 INSERT INTO 
     PAYMENT (PAY_CODE, ODR_CODE, MBSP_ID, PAY_METHOD, PAY_DATE, PAY_TOT_RICE, PAY_NOBANK_PRICE, PAY_NOBANK_USER, PAY_NOBANK, PAY_MEMO ,PAY_BANK_ACCOUNT)
 VALUES
     (SEQ_PAYMENT_CODE.NEXTVAL,#{odr_code},#{mbsp_id},#{pay_method},sysdate,#{pay_tot_price},#{pay_nobank_price},#{pay_nobank_user},#{pay_nobank},#{pay_memo},#{pay_bank_account})
     
---7.¸®ºä Å×ÀÌºí
+--7.ë¦¬ë·° í…Œì´ë¸”
 CREATE TABLE REVIEW_TBL(
         REW_NUM         NUMBER,
         MEMBER_ID         VARCHAR2(15)                NOT NULL,
@@ -452,13 +452,13 @@ ADD CONSTRAINT PK_REVIEW_TBL PRIMARY KEY(REW_NUM);
 
 create sequence SEQ_REVIEW_TBL;
 
--- ¸®ºä ÀÛ¼º
+-- ë¦¬ë·° ìž‘ì„±
 INSERT INTO 
     REVIEW_TBL (REW_NUM, MBSP_ID, PRO_NUM, REW_CONTENT, REW_SCORE, REW_REGDATE)
 VALUES
     (SEQ_REVIEW_TBL.NEXTVAL,);
 
--- ¸®ºä »óÇ° ÈÄ±â
+-- ë¦¬ë·° ìƒí’ˆ í›„ê¸°
 <![CDATA[
 		select 
     		REW_NUM, MBSP_ID, PRO_NUM, REW_CONTENT, REW_SCORE, REW_REGDATE
@@ -477,14 +477,14 @@ VALUES
 		    rn > (#{cri.pageNum} -1) * #{cri.amount}
 		]]>
 
--- ¸®ºä ÆäÀÌÂ¡ 
+-- ë¦¬ë·° íŽ˜ì´ì§• 
 
 
   
-   -- ÁÖ¹® »ó¼¼ Á¤º¸¸¦ °¡Á®¿Ã Äõ¸®¹®. (ÁÖ¹®»ó¼¼Å×ÀÌºí, »óÇ°Å×ÀÌºí Á¶ÀÎ)
-   -- JOIN : 1. ¿À¶óÅ¬ Á¶ÀÎ 2. ANSI-SQL Ç¥ÁØÁ¶ÀÎ
+   -- ì£¼ë¬¸ ìƒì„¸ ì •ë³´ë¥¼ ê°€ì ¸ì˜¬ ì¿¼ë¦¬ë¬¸. (ì£¼ë¬¸ìƒì„¸í…Œì´ë¸”, ìƒí’ˆí…Œì´ë¸” ì¡°ì¸)
+   -- JOIN : 1. ì˜¤ë¼í´ ì¡°ì¸ 2. ANSI-SQL í‘œì¤€ì¡°ì¸
 
-   -- ¿À¶óÅ¬
+   -- ì˜¤ë¼í´
    SELECT
        ot.ORD_CODE, ot.PRO_NUM, ot.DT_AMOUNT,
        pt.CG_CODE, pt.PRO_NAME, pt.PRO_PRICE, pt.PRO_UP_FOLDER, pt.PRO_IMG, pt.PRO_AMOUNT, pt.PRO_BUY
@@ -498,9 +498,9 @@ VALUES
 INSERT INTO PAYMENT (
     PAY_CODE, ODR_CODE, MEMBER_ID, PAY_METHOD, PAY_DATE, PAY_TOT_PRICE, PAY_MEMO ,PAY_NOBANK_PRICE, PAY_NOBANK_USER, PAY_NOBANK, PAY_BANK_ACCOUNT ) 
 VALUES 
-    (SEQ_PAYMENT_CODE.NEXTVAL),2,'user01','¹«ÅëÀåÀÔ±Ý',sysdate,71725,'' ,71725,'È«±æµ¿','±¹¹ÎÀºÇà','456-456-4567')
+    (SEQ_PAYMENT_CODE.NEXTVAL),2,'user01','ë¬´í†µìž¥ìž…ê¸ˆ',sysdate,71725,'' ,71725,'í™ê¸¸ë™','êµ­ë¯¼ì€í–‰','456-456-4567')
 
--- ¾îµå¹Î ¸ÞÀÎÆäÀÌÁö ÃÖ±Ù ÁÖ¹®¸ñ·Ï5°³ ROW_NUMBER¸¦ ¾´ÀÌÀ¯ ±×³É rounumÀº Á¤·ÄÀÌµÇ°í µ¥ÀÌÅÍ¸¦»Ì¾Æ¿ÀÁö¸øÇØ¼­ ÃÖ±Ùµ¥ÀÌÅÍ¸¦ »Ì¾Æ¿ÀÁö¸øÇÔ
+-- ì–´ë“œë¯¼ ë©”ì¸íŽ˜ì´ì§€ ìµœê·¼ ì£¼ë¬¸ëª©ë¡5ê°œ ROW_NUMBERë¥¼ ì“´ì´ìœ  ê·¸ëƒ¥ rounumì€ ì •ë ¬ì´ë˜ê³  ë°ì´í„°ë¥¼ë½‘ì•„ì˜¤ì§€ëª»í•´ì„œ ìµœê·¼ë°ì´í„°ë¥¼ ë½‘ì•„ì˜¤ì§€ëª»í•¨
 select
 			ord_code, member_id, ord_name, ord_tel, pay_method, 
             TO_CHAR(ord_price, '999,999,999') AS ord_price, ord_regdate,rnum
@@ -515,7 +515,7 @@ select
 			)
 		WHERE 
 			rnum <= 5;
--- ¾îµå¹Î ¸ÞÀÎÆäÀÌÁö ÃÖ±ÙÈ¸¿ø°¡ÀÔ    
+-- ì–´ë“œë¯¼ ë©”ì¸íŽ˜ì´ì§€ ìµœê·¼íšŒì›ê°€ìž…    
 select
     MEMBER_NAME,MEMBER_ID,MEMBER_PHONE,MEMBER_EMAIL,MEMBER_DATESUB
 from
@@ -531,15 +531,15 @@ FROM
     ON o.ord_code = p.odr_code
 
 SELECT
-    -- ÃÑ ÁÖ¹®°Ç¼ö ¹× ÃÑ ÁÖ¹®±Ý¾×
+    -- ì´ ì£¼ë¬¸ê±´ìˆ˜ ë° ì´ ì£¼ë¬¸ê¸ˆì•¡
     COUNT(O.ORD_CODE) AS total_orders,
     TO_CHAR(SUM(P.PAY_TOT_PRICE),'999,999,999') AS total_order_amount,
 
-    -- ÀÌ¹ø ´Þ ÁÖ¹®°Ç¼ö ¹× ÁÖ¹®±Ý¾×
+    -- ì´ë²ˆ ë‹¬ ì£¼ë¬¸ê±´ìˆ˜ ë° ì£¼ë¬¸ê¸ˆì•¡
     COUNT(CASE WHEN EXTRACT(YEAR FROM O.ORD_REGDATE) = EXTRACT(YEAR FROM SYSDATE) AND EXTRACT(MONTH FROM O.ORD_REGDATE) = EXTRACT(MONTH FROM SYSDATE) THEN O.ORD_CODE END) AS this_month_orders,
     TO_CHAR(SUM(CASE WHEN EXTRACT(YEAR FROM O.ORD_REGDATE) = EXTRACT(YEAR FROM SYSDATE) AND EXTRACT(MONTH FROM O.ORD_REGDATE) = EXTRACT(MONTH FROM SYSDATE) THEN P.PAY_TOT_PRICE END),'999,999,999') AS this_month_order_amount,
 
-    -- Àú¹ø ´Þ ÁÖ¹®°Ç¼ö ¹× ÁÖ¹®±Ý¾×
+    -- ì €ë²ˆ ë‹¬ ì£¼ë¬¸ê±´ìˆ˜ ë° ì£¼ë¬¸ê¸ˆì•¡
     COUNT(CASE WHEN EXTRACT(YEAR FROM O.ORD_REGDATE) = EXTRACT(YEAR FROM ADD_MONTHS(SYSDATE, -1)) AND EXTRACT(MONTH FROM O.ORD_REGDATE) = EXTRACT(MONTH FROM ADD_MONTHS(SYSDATE, -1)) THEN O.ORD_CODE END) AS last_month_orders,
     TO_CHAR(SUM(CASE WHEN EXTRACT(YEAR FROM O.ORD_REGDATE) = EXTRACT(YEAR FROM ADD_MONTHS(SYSDATE, -1)) AND EXTRACT(MONTH FROM O.ORD_REGDATE) = EXTRACT(MONTH FROM ADD_MONTHS(SYSDATE, -1)) THEN P.PAY_TOT_PRICE END),'999,999,999') AS last_month_order_amount
 FROM   

@@ -10,45 +10,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>JS Mall | order_list</title>
+  <title>JS Mall | 회원관리</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   
   <%@include file="/WEB-INF/views/admin/include/plugin1.jsp" %>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.1/handlebars.js"></script>
-  <script id="orderDetailTemplate" type="text/x-handlebars-template">
-    <tr class="tr_detail_info">
-      <td colspan="9" style="text-align: left;">
-        <table class="table table-sm">
-          <caption style="display: table-caption; text-align: center; color: red; font-weight: bold;">[주문상세정보]</caption>
-          <thead>
-            <tr>
-              <th scope="col">주문번호</th>
-              <th scope="col">상품코드</th>
-              <th scope="col">상품이미지</th>
-              <th scope="col">상품명</th>
-              <th scope="col">주문수량</th>
-              <th scope="col">주문금액</th>
-              <th scope="col">비고</th>
-            </tr>
-          </thead>
-          <tbody>
-            {{#each .}}
-              <tr>
-                <th scope="row">{{ord_code}}</th>
-                <td>{{pro_num}}</td>
-                <td><img src="/admin/order/imageDisplay?dateFolderName={{pro_up_folder}}&fileName={{pro_img}}"></td>
-                <td class="td_pro_name">{{pro_name}}</td>
-                <td>{{dt_amount}}</td>
-                <td>{{ord_price}}</td>
-                <td><button type="button" name="btn_order_delete" class="btn btn-danger" data-ord_code="{{ord_code}}" data-pro_num="{{pro_num}}">삭제</button></td>
-              </tr>
-            {{/each}}
-          </tbody>
-        </table>
-      </td>
-    </tr>
-</script>
 </head>
 <!--
 BODY TAG OPTIONS:
@@ -99,16 +66,17 @@ desired effect
       <div class="col-md-12">
         <div class="box">
 					<div class="box-header with-border">
-					<h3 class="box-title">Order List</h3>
+					<h3 class="box-title">Member List</h3>
 					</div>
 
 					<div class="box-body">
 						<div>
-							<form action="/admin/order/order_list" method="get" >
+							<form action="/admin/member/member_list" method="get" >
 									<select name="type">
 										<option selected>검색종류선택</option>
-										<option value="N" ${pageMaker.cri.type == 'N'? 'selected': ''}>주문자</option>
-										<option value="C" ${pageMaker.cri.type == 'C'? 'selected': ''}>주문코드</option>
+										<option value="I" ${pageMaker.cri.type == 'I'? 'selected': ''}>아이디</option>
+										<option value="N" ${pageMaker.cri.type == 'N'? 'selected': ''}>이름</option>
+                    <option value="P" ${pageMaker.cri.type == 'P'? 'selected': ''}>핸드폰</option>
 									</select>
 									<input type="text" name="keyword" value="${pageMaker.cri.keyword}" />
 									<input type="hidden" name="pageNum" value="${pageMaker.cri.pageNum}" />
@@ -119,39 +87,28 @@ desired effect
 									<button type="submit" class="btn btn-primary">검색</button>
 							</form>
 						</div>
-						<table class="table table-bordered" id="order_info_tbl">
-							<tbody>
+						<table class="table table-bordered">
+              <thead>
                 <tr>
-                  <th style="width: 8%">주문번호</th>
-                  <th style="width: 12%">주문일시</th>
-                  <th style="width: 10%">주문번호</th>
-                  <th style="width: 15%">배송비</th>
-                  <th style="width: 15%">주문상태</th>
-                  <th style="width: 10%">주문자</th>
-                  <th style="width: 10%">총주문액</th>
-                  <th style="width: 10%">결제상태</th>
-                  <th style="width: 10%">비고</th>
+                  <th scope="col">이름</th>
+                  <th scope="col">아이디</th>
+                  <th scope="col">전화번호</th>
+                  <th scope="col">이메일</th>
+                  <th scope="col">가입일시</th>
                 </tr>
-							<c:forEach items="${order_list }" var="orderVO">
-							<tr>
-								<td>${orderVO.ord_code}</td>
-								<td>
-									<fmt:formatDate value="${orderVO.ord_regdate }" pattern="yyyy-MM-dd hh:mm:ss" />
-								</td>
-								<td><span class="btn_order_detail">${orderVO.ord_code }</span></td>
-								<td>0</td>
-								<td>
-									주문상태
-								</td>
-								<td>${orderVO.ord_name}</td>
-								<td>${orderVO.ord_price}</td>
-								<td>${orderVO.payment_status}</td>
-                <td>
-                  <button type="button" class="btn btn-info btn_order_detail2" id="order_detail_info2" data-ord_code="${orderVO.ord_code }">주문상세</button>
-                </td>
-							</tr>
-							</c:forEach>
-							</tbody></table>
+              </thead>
+              <tbody>
+                <c:forEach items="${member_list }" var="member_list">
+                  <tr>
+                    <td>${member_list.member_name}</td>
+                    <td>${member_list.member_id}</td>
+                    <td>${member_list.member_phone}</td>
+                    <td>${member_list.member_email}</td>
+                    <td><fmt:formatDate value='${member_list.member_datesub}' pattern='yyyy/MM/dd hh:mm:ss' /></td>
+                  </tr>
+                </c:forEach>
+              </tbody>
+            </table>
 					</div>
 					<div class="box-footer clearfix">
 						<div class="row">
@@ -299,7 +256,7 @@ desired effect
     $(".movepage").on("click", function(e) {
       e.preventDefault(); // a태그의 href 링크기능을 제거. href속성에 페이지번호를 숨겨둠.
 
-      actionForm.attr("action", "/admin/order/order_list");
+      actionForm.attr("action", "/admin/member/member_list");
       actionForm.find("input[name='pageNum']").val($(this).attr("href"));
 
       actionForm.append('<input type="date" name="start_date" value="${start_date}">');
@@ -310,85 +267,10 @@ desired effect
 
     
 
-    let printOrderDetailList = function(orderDetailData, target, template) {
-        let templateObj = Handlebars.compile(template.html());
-        let orderDetailHtml = templateObj(orderDetailData);
-
-          //상품후기목록 위치를 참조하여, 추가
-          // target.children().remove();
-          // target.find(".tr_detail_info").css("display","none");
-          // (".tr_detail_info").css("display","none");
-          // target.find(".tr_detail_info").css("display","none");
-
-
-          target.parent().find(".tr_detail_info").remove();
-          target.after(orderDetailHtml);
-    }
-
-    // 주문상세에서 개별삭제
-    $("table#order_info_tbl").on("click","button[name='btn_order_delete']",function() {
-
-      // console.log("개별삭제");
-
-      let ord_code = $(this).data('ord_code');
-      let pro_num = $(this).data('pro_num');
-      let pro_name = $(this).parent().parent().find($(".td_pro_name")).text();
-
-      if(!confirm(pro_name + "를(을)정말 삭제하시겠습니까?")) return;
-      // console.log("주문번호",ord_code);
-      // console.log("상품번호",pro_num);
-
-      // <input type="hidden" name="ord_code" value="">
-      actionForm.append('<input type="hidden" name="ord_code" value="'+ ord_code +'" />');
-      actionForm.append('<input type="hidden" name="pro_num" value="'+ pro_num +'" />');
-
-      actionForm.attr("method","get");
-      actionForm.attr("action","/admin/order/order_product_delete");
-      actionForm.submit();
-
-
-    });
-
-    // 주문상세 방법2 이벤트
-    $(".btn_order_detail2").on("click", function() {
-      
-      // let cur_tr = $(this).parent().parent();
-      
-      let ord_code = $(this).data("ord_code");
-
-      // console.log("주문번호", ord_code);
-
-      let url = "/admin/order/order_detail_info2/" + ord_code;
-      // getOrderDetailInfo(url, cur_tr);
-
-      $("#order_detail_content").load(url);
-      
-      $("#order_detail_modal").modal('show');
-    });
+    
 
   }); // ready 이벤트
 </script>
-
-
-<div class="modal fade" id="order_detail_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-modal="true">
-  <div class="modal-dialog modal-dialog-scrollable">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">×</span>
-        </button>
-      </div>
-      <div class="modal-body" id="order_detail_content">
-        
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-
 
 </body>
 </html>

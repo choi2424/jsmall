@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jsmall.mapper.AdMemberMapper">
+	
+	<sql id="criteria">
+    	<trim prefix="(" suffix=") AND" prefixOverrides="OR">
+        	<foreach collection="cri.typeArr" item="type">
+            	<trim prefix="OR">
+               		<choose>
+                  		<when test="cri.type == 'I'.toString()">
+                        	MEMBER_ID like '%' || #{cri.keyword} || '%'
+                  		</when>
+                  		<when test="cri.type == 'N'.toString()">
+                            MEMBER_NAME like '%' || #{cri.keyword} || '%'
+                  		</when>
+                  		<when test="cri.type == 'P'.toString()">
+                            MEMBER_PHONE like '%' || #{cri.keyword} || '%'
+                  		</when>
+               		</choose>
+            	</trim>
+         	</foreach>
+      	</trim>
+   	</sql>
+	
+	<sql id="period">
+		<if test="start_date != null and !start_date.equals('')">
+			<![CDATA[
+				MEMBER_DATESUB >= TO_DATE(#{start_date}) and MEMBER_DATESUB < TO_DATE(#{end_date}) + 1 and
+			]]>
+		</if>
+	</sql>
+	
+	<select id="member_list" resultType="com.jsmall.domain.MemberVO" parameterType="map">
+    	<![CDATA[
+      	select 
+        	MEMBER_NAME, MEMBER_ID, MEMBER_EMAIL, MEMBER_PHONE, MEMBER_DATESUB
+      	from 
+        	(select /*+INDEX_DESC(MEMBER_TABLE PK_MEMBER_ID) */
+        		rownum rn, MEMBER_NAME, MEMBER_ID, MEMBER_EMAIL, MEMBER_PHONE, MEMBER_DATESUB
+          	
+          	from 
+            	MEMBER_TABLE
+          	where 
+        ]]>
+          
+        <include refid="criteria"></include>
+        <include refid="period"></include>
+          
+        <![CDATA[
+            	rownum <= #{cri.pageNum} * #{cri.amount}
+        	)
+		where 
+        	rn > (#{cri.pageNum} -1) * #{cri.amount}
+        ]]>
+   </select>
+   
+   <select id="getTotalCount" resultType="int">
+    	select 
+    		count(*) from MEMBER_TABLE 
+    	where
+    		<include refid="criteria"></include>
+    		<include refid="period"></include>
+ 			rownum = 1 -- Limit the result to one row
+	</select>
+	
+</mapper>

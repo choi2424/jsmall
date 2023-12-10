@@ -72,7 +72,7 @@ desired effect
                   </div>
                   <div class="row">
                     <div class="col-md-6 themed-grid-col">
-                      <th scope="col-6" class="tac">1차 분류</th>
+                      <th scope="col-6" class="tac">1차 카테고리</th>
                       <tr>
                         <td>
                           <div>
@@ -86,7 +86,7 @@ desired effect
                       </tr>
                     </div>
                     <div class="col-md-6 themed-grid-col">
-                      <th scope="col-6" class="tac">2차 분류</th>
+                      <th scope="col-6" class="tac">2차 카테고리</th>
                       <tr>
                         <td>
                           <div>
@@ -99,8 +99,81 @@ desired effect
                     </div>
                   </div>
                 </div>
-                <div class="col-md-4 themed-grid-col">.col-md-4</div>
+                <div class="col-md-4 themed-grid-col">
+                  <div class="box-header with-border">
+                    <h3>카테고리 추가</h3>
+                  </div>
+                  <div>
+                    <th scope="col-6" class="tac">1차 카테고리</th><br>
+                    <tr>
+                      <td>
+                        <b>카테고리 이름</b>
+                        <input type="text" id="f_category">
+                        <button type="button" id="f_cte_add" class="btn btn-primary">추가</button>
+                      </td>
+                    </tr>
+                  </div>
+                  <br>
+                  <div>
+                    <th scope="col-6" class="tac">2차 카테고리</th><br>
+                    <tr>
+                      <td>
+                        <div>
+                          <b>1차 카테고리 선택</b>
+                          <select style="width: 165px;" id="a_firstCategory">
+                            <c:forEach items="${firstCategoryList }" var="categoryVO">
+                              <option value="${categoryVO.cg_code }">${categoryVO.cg_name }</option>
+                            </c:forEach>
+                          </select>
+                        </div>
+                        <b>2차 카테고리 이름</b>
+                        <input type="text" id="s_category">
+                        <button type="button" id="s_cte_add" class="btn btn-primary">추가</button>
+                      </td>
+                    </tr>
+                  </div>
+                </div>
+                <div class="col-md-4 themed-grid-col">
+                  <div class="box-header with-border">
+                      <h3>카테고리 제거</h3>
+                  </div>
+                  <div>
+                      <th scope="col-6" class="tac">1차 카테고리</th><br>
+                      <tr>
+                          <td>
+                              <b>1차 카테고리 선택</b>
+                              <select style="width: 165px;" id="r_firstCategory">
+                                  <c:forEach items="${firstCategoryList}" var="categoryVO">
+                                      <option value="${categoryVO.cg_code}">${categoryVO.cg_name}</option>
+                                  </c:forEach>
+                              </select>
+                          </td>
+                      </tr>
+                  </div>
+                  <br>
+                  <div>
+                      <th scope="col-6" class="tac">2차 카테고리</th><br>
+                      <tr>
+                          <td>
+                              <div>
+                                  <b>2차 카테고리 선택</b>
+                                  <select style="width: 165px;" id="r_secondCategory" name="cg_code">
+  
+                                  </select>
+                              </div>
+                              <br>
+                              <button type="button" id="r_first_cte_remove" class="btn btn-danger">1차 카테고리 제거</button>
+                              <button type="button" id="r_cte_remove" class="btn btn-danger">2차 카테고리 제거</button>
+                          </td>
+                      </tr>
+                  </div>
+                </div>
               </div>
+            </div>
+            <div>
+              주의<br>
+              1. 카테고리를 삭제 하시기전에 카테고리에 포함된 상품을 먼저 삭제해주세요<br>
+              2. 1차 카테고리를 제거하시기 전에 1차카테고리에 포함된 2차카테고리를 먼저 제거해주세요
             </div>
           </div>
         </div>
@@ -199,10 +272,8 @@ desired effect
 
       // 1차 카테고리를 선택했을때
       $("#firstCategory").change(function() {
-        // $(this) : option태그중 선택한 option 태그를 가리킴.
-        let cg_parent_code = $(this).val();
 
-        // console.log("1차 카테고리 코드" , cg_code);
+        let cg_parent_code = $(this).val();
 
         // 1차 카테고리 선택에 의한 2차 카테고리 정보를 가져오는 url
         let url = "/admin/category/secondCategory/" + cg_parent_code; //".json";
@@ -228,6 +299,122 @@ desired effect
 
         });
       });
+
+      // 1차 카테고리 추가
+      $("#f_cte_add").on("click", function() {
+        let cg_name = $("#f_category").val();
+
+        // Ajax 요청
+        $.ajax({
+          type: "POST",
+          url: "/admin/category/addFirstCategory",
+          data: { cg_name : cg_name },
+          success: function(response) {
+            alert("1차 카테고리가 추가되었습니다.");
+            location.reload();
+
+          },
+          error: function(error) {
+            alert("오류가 발생했습니다. 다시 시도해주세요.");
+            console.error(error);
+          }
+        });
+      });
+
+      // 2차 카테고리 추가
+      $("#s_cte_add").on("click", function() {
+        let cg_name = $("#s_category").val();
+        let cg_parent_code = $("#a_firstCategory").val();
+
+        // Ajax 요청
+        $.ajax({
+          type: "POST",
+          url: "/admin/category/addSecondCategory",
+          data: { cg_name : cg_name , cg_parent_code : cg_parent_code},
+          success: function(response) {
+            alert("2차 카테고리가 추가되었습니다.");
+            location.reload();
+
+          },
+          error: function(error) {
+            alert("오류가 발생했습니다. 다시 시도해주세요.");
+            console.error(error);
+          }
+        });
+      });
+
+      // 카테고리 제거
+      // 1차 카테고리를 선택했을때
+      $("#r_firstCategory").change(function() {
+
+        let cg_parent_code = $(this).val();
+
+        // 1차 카테고리 선택에 의한 2차 카테고리 정보를 가져오는 url
+        let url = "/admin/category/secondCategory/" + cg_parent_code; //".json";
+
+        // $.getJSON() : 스프링에 요청시 데이터를 json으로 받는 기능
+        $.getJSON(url,function(secondCategoryList) {
+
+          // 2차 카테고리 select태그참조
+          let secondCategory = $("#r_secondCategory");
+          let optionStr = "";
+
+          // find("css선택자") : 태그명 , id속성이름 , class속성이름
+          secondCategory.find("option").remove(); // 2차 카테고리의 option제거
+
+          for(let i=0; i<secondCategoryList.length; i++){
+            optionStr += "<option value='" + secondCategoryList[i].cg_code + "'>" + secondCategoryList[i].cg_name + "</option>";
+          }
+          // console.log(optionStr);
+          secondCategory.append(optionStr); // 2차 카테고리 <option>태그들이 추가. 
+        });
+      });
+
+      // 2차 카테고리 제거
+      $("#r_cte_remove").on("click",function() {
+        let cg_code = $("#r_secondCategory").val(); 
+
+        if (!confirm($("#r_firstCategory option:selected").text() + "의 " + $("#r_secondCategory option:selected").text() + "를(을) 정말 삭제하시겠습니까?")) return;
+        
+        $.ajax({
+          type: "POST",
+          url: "/admin/category/removeCategory",
+          data: { cg_code : cg_code },
+          success: function(response) {
+            alert("선택된 카테고리가 제거되었습니다.");
+            location.reload();
+
+          },
+          error: function(error) {
+            alert("오류가 발생했습니다. 다시 시도해주세요.");
+            console.error(error);
+          }
+        });
+      });
+
+      // 1차 카테고리 제거
+      $("#r_first_cte_remove").on("click",function() {
+        let cg_code = $("#r_firstCategory").val(); 
+
+        if (!confirm($("#r_firstCategory option:selected").text() + "를(을) 정말 삭제하시겠습니까?")) return;
+        
+        $.ajax({
+          type: "POST",
+          url: "/admin/category/removeCategory",
+          data: { cg_code : cg_code },
+          success: function(response) {
+            alert("선택된 카테고리가 제거되었습니다.");
+            location.reload();
+
+          },
+          error: function(error) {
+            alert("오류가 발생했습니다. 다시 시도해주세요.");
+            console.error(error);
+          }
+        });
+      });
+
+
 
     });
   </script>

@@ -32,5 +32,30 @@
    			CG_CODE = #{cg_code}
    	</select>
 	
+	<insert id="addFirstCategory">
 	
+		INSERT INTO 
+			CATEGORY_TBL (CG_CODE , CG_NAME)
+		VALUES 
+			(SEQ_CATEGORY_TBL.NEXTVAL,#{cg_name})
+	
+	</insert>
+	
+	<insert id="addSecondCategory">
+	
+		INSERT INTO 
+			CATEGORY_TBL (CG_CODE , CG_NAME , CG_PARENT_CODE)
+		VALUES 
+			(SEQ_CATEGORY_TBL.NEXTVAL,#{cg_name},#{cg_parent_code})
+	
+	</insert>
+	
+	<delete id="removeCategory">
+		
+		DELETE FROM
+			CATEGORY_TBL
+		WHERE
+			CG_CODE = #{cg_code}
+			
+	</delete>
 </mapper>

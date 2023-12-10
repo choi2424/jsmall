@@ -47,31 +47,32 @@
 <%@include file="/WEB-INF/views/comm/category_menu.jsp" %>
 
 <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
- <p>${cg_name }</p>
+  <p>${cg_name }</p>
 </div>
 
 <div class="container">
   <div class="card-deck mb-3 text-center row">
     <c:forEach items="${pro_list }" var="productVO">
-    <div class="col-md-3">
-	    <div class="card mb-4 shadow-sm">
-            <img class="btn_pro_img" style="cursor: pointer;" data-pro_num="${productVO.pro_num}" width="100%" height="200" src="/user/product/imageDisplay?dateFolderName=${productVO.pro_up_folder }&fileName=${productVO.pro_img}">
+      <div class="col-md-3">
+        <div class="card mb-4 shadow-sm">
+          <img class="btn_pro_img" style="cursor: pointer;" data-pro_num="${productVO.pro_num}" width="100%" height="200" src="/user/product/imageDisplay?dateFolderName=${productVO.pro_up_folder }&fileName=${productVO.pro_img}">
 
-            <div class="card-body">
-              <p class="card-text btn_pro_img" style="cursor: pointer;" data-pro_num="${productVO.pro_num}">${productVO.pro_name }</p>
-              <div class="d-flex justify-content-between align-items-center">
-                <div class="btn-group">
-                  <button type="button" name="btn_cart_add" data-pro_num="${productVO.pro_num}" class="btn btn-sm btn-outline-secondary">Cart</button>
-                  <button type="button" name="btn_buy" class="btn btn-sm btn-outline-secondary">Buy</button>
-                </div>
-                <small class="text-muted">
-                	<fmt:formatNumber type="currency" pattern="₩#,###" value="${productVO.pro_price }"></fmt:formatNumber>
-                </small>
+          <div class="card-body">
+            <p class="card-text btn_pro_img" style="cursor: pointer;" data-pro_num="${productVO.pro_num}">${productVO.pro_name }</p>
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="btn-group">
+                <button type="button" name="btn_cart_add" data-pro_num="${productVO.pro_num}" class="btn btn-sm btn-outline-secondary">Cart</button>
+                <button type="button" name="btn_buy" data-pro_num="${productVO.pro_num}" class="btn btn-sm btn-outline-secondary">Buy</button>
               </div>
+              <small class="text-muted">
+                <fmt:formatNumber type="currency" pattern="₩#,###" value="${productVO.pro_price }"></fmt:formatNumber>
+              </small>
             </div>
           </div>
-    </div>
+        </div>
+      </div>
     </c:forEach>
+    <input type="hidden" id="btn_quantity" value="1">
   </div>
 <div class="row text-center">
 	<div class="col-md-12">
@@ -159,6 +160,14 @@
           }
         }
       });
+    });
+
+    // 구매버튼 클릭
+    $("button[name='btn_buy']").on("click", function() {
+      
+      let url = "/user/order/order_ready?pro_num=" + $(this).data("pro_num") + "&cart_amount=" + $("#btn_quantity").val()
+      console.log(url);
+      location.href = url;
     });
 
     // 상품이미지 또는 상품명 클릭시 상품 상세로 보내는 작업

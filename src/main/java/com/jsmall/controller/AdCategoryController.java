@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -45,5 +46,44 @@ public class AdCategoryController {
 	@GetMapping("/category_list")
 	public void category_list() {
 		
+	}
+	
+	// 1차 카테고리 추가
+	@PostMapping("/addFirstCategory")
+	public ResponseEntity<String> addFirstCategory(String cg_name) {
+		
+		ResponseEntity<String> entity = null;
+		
+		adCategoryService.addFirstCategory(cg_name);
+		
+		entity = new ResponseEntity<String>("success",HttpStatus.OK);
+		
+		return entity;
+	}
+	
+	// 2차 카테고리 추가
+	@PostMapping("/addSecondCategory")
+	public ResponseEntity<String> addSecondCategory(String cg_name,Integer cg_parent_code) {
+		
+		ResponseEntity<String> entity = null;
+		
+		adCategoryService.addSecondCategory(cg_name, cg_parent_code);
+		
+		entity = new ResponseEntity<String>("success",HttpStatus.OK);
+		
+		return entity;
+	}
+	
+	// 카테고리 제거
+	@PostMapping("/removeCategory")
+	public ResponseEntity<String> removeCategory(Integer cg_code) {
+		
+		ResponseEntity<String> entity = null;
+		
+		adCategoryService.removeCategory(cg_code);
+		
+		entity = new ResponseEntity<String>("success",HttpStatus.OK);
+		
+		return entity;
 	}
 }

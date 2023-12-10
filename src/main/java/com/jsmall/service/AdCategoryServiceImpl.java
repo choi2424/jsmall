@@ -32,6 +32,24 @@ public class AdCategoryServiceImpl implements AdCategoryService {
 		// TODO Auto-generated method stub
 		return adCategoryMapper.get(cg_code);
 	}
+
+	@Override
+	public void addFirstCategory(String cg_name) {
+		// TODO Auto-generated method stub
+		adCategoryMapper.addFirstCategory(cg_name);
+	}
+
+	@Override
+	public void addSecondCategory(String cg_name, Integer cg_parent_code) {
+		// TODO Auto-generated method stub
+		adCategoryMapper.addSecondCategory(cg_name, cg_parent_code);
+	}
+
+	@Override
+	public void removeCategory(Integer cg_code) {
+		// TODO Auto-generated method stub
+		adCategoryMapper.removeCategory(cg_code);
+	}
 	
 	
 }
